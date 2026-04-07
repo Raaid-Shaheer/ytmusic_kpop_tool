@@ -1,13 +1,11 @@
-from auth.auth_manager import AuthManager
-from core.playlist_scanner import PlaylistScanner
+from clients.musicbrainz_client import MusicBrainzClient
 
-auth = AuthManager()
-scanner = PlaylistScanner(auth_manager=auth)
+client = MusicBrainzClient()
+artist_id = client.get_artist_id("girls generation")
+print(f"Artist ID: {artist_id}")
 
-# Paste a real public playlist URL here
-tracks = scanner.scan("https://music.youtube.com/playlist?list=RDCLAK5uy_l7wbVbkC-dG5fyEQQsBfjm_z3dLAhYyvo")
+recordings = client.get_recordings(artist_id)
+print(f"Found {len(recordings)} unique recordings")
 
-print(f"Found {len(tracks)} tracks\n")
-for track in tracks[:10]:
-    print(track)
-    print(f"{track.title} | video_id: {track.video_id}")
+for i, r in enumerate(recordings, 1):
+    print(f"{i}. {r['title']} ")
