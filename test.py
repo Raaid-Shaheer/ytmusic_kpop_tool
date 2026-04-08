@@ -1,11 +1,11 @@
 from clients.musicbrainz_client import MusicBrainzClient
+from core.discography_fetcher import DiscographyFetcher
 
-client = MusicBrainzClient()
-artist_id = client.get_artist_id("girls generation")
-print(f"Artist ID: {artist_id}")
+mb_client = MusicBrainzClient()
+fetcher = DiscographyFetcher(mb_client=mb_client)
 
-recordings = client.get_recordings(artist_id)
-print(f"Found {len(recordings)} unique recordings")
+tracks = fetcher.get_discography("BLACKPINK")
 
-for i, r in enumerate(recordings, 1):
-    print(f"{i}. {r['title']} ")
+print(f"Found {len(tracks)} tracks\n")
+for track in tracks[:5]:
+    print(track)

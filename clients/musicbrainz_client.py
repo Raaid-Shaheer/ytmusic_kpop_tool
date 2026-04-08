@@ -49,7 +49,7 @@ class MusicBrainzClient:
         title = recording.get("title","")
         disambiguation= recording.get("disambiguation","")
 
-        rem_keywords = ["edit","remix","inst.","-jp ver.-","instrumental","dance","behind the scenes","intro","bootleg","mix","interview","tour","acoustic","movie","version","performance","choreography","ver.","video","teaser","behind","film","movie","documentary","extended","trailer","clip","making","live","without","mc","opening"]
+        rem_keywords = ["edit","remix","inst.","-jp ver.-","instrumental","dance","behind the scenes","intro","bootleg","mix","interview","tour","acoustic","movie","version","performance","choreography","ver.","video","teaser","behind","film","movie","documentary","extended","trailer","clip","making","without","mc","opening"]
 
         if any(word in title.lower() for word in rem_keywords):
             return False
