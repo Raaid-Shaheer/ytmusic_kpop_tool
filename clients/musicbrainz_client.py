@@ -59,7 +59,6 @@ class MusicBrainzClient:
         if not re.search(r'[a-zA-Z0-9가-힣]',title):
             return False
         if title.startswith("["):
-            print(f"  Rejected {title}: starts with [")
             return False
 
         return True
