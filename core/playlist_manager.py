@@ -63,7 +63,7 @@ class PlaylistManager:
     def _get_or_create_playlist(self, title: str) -> str:
         all_playlists = self._client.get_library_playlists(limit=100)
         for playlist in all_playlists:
-            if playlist["title"] == title:
+            if playlist["title"].lower() == title.lower():
                 print(f"  Found existing playlist: {title}")
                 return playlist["playlistId"]
 

@@ -1,3 +1,4 @@
+import time
 from typing import List
 import re
 from models.track import Track
@@ -28,4 +29,5 @@ class TrackMatcher:
             results = self._client.search(f"{track.title} {track.artist}", filter="songs", limit=1)
             if results:
                 track.video_id = results[0]["videoId"]
+                time.sleep(0.5)
         return [track for track in tracks if track.video_id is not None]

@@ -11,14 +11,15 @@ musicbrainzngs.set_useragent("ytmusic-kpop-tool", "0.1", "sahlraaid52@gmail.com"
 
 class MusicBrainzClient:
     def get_artist_id(self, artist_name: str) -> Optional[str]:
-        search_result = musicbrainzngs.search_artists(query=artist_name, limit=1)
-        artist_list = search_result.get("artist-list",[])
-        if not artist_list:
-            raise ValueError("No artist found for query")
+        try:
+            search_result = musicbrainzngs.search_artists(query=artist_name, limit=1)
+            artist_list = search_result.get("artist-list",[])
+            if not artist_list:
+                raise ValueError(f"No artist found for: {artist_name}")
+            return artist_list[0]["id"]
+        except Exception as e:
+            raise ConnectionError(f"MusicBrainz API error: {e}")
 
-        artist_id = artist_list[0]["id"]
-
-        return artist_id
 # Get recordings by artist ID
     def get_recordings(self,artist_id: str) -> list:
         all_recordings = []

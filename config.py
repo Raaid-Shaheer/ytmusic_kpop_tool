@@ -3,7 +3,6 @@ SOURCE_PLAYLIST_URL = "https://music.youtube.com/playlist?list=PLURfIY-yAalhne8d
 
 TARGET_GROUPS = [
     "BLACKPINK",
-    "AESPA",
-    "IVE",
-    "TWICE"
+    "BABYMONSTER",
+    "IVE"
 ]

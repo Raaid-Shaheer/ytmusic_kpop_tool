@@ -20,29 +20,37 @@ def main():
     playlist_tracks = scanner.scan(SOURCE_PLAYLIST_URL)
     print(f"Scanned {len(playlist_tracks)} tracks")
 
-    for target_group in TARGET_GROUPS:
-        print(f"\n{'=' * 40}")
-        print(f"  Processing: {target_group}")
-        print(f"{'=' * 40}")
-        # Step 2 — get discography
-        discography = fetcher.get_discography(target_group)
-        print(f"Discography has {len(discography)} tracks")
+    for group in TARGET_GROUPS:
+        try:
+            print(f"\n{'=' * 40}")
+            print(f"  Processing: {group}")
+            print(f"{'=' * 40}")
 
-        # Step 3 — filter playlist by artist
-        target_group_in_playlist = matcher.filter_by_artist(playlist_tracks, target_group)
-        print(f"{target_group} tracks in playlist: {len(target_group_in_playlist)}")
+            discography = fetcher.get_discography(group)
+            print(f"  Discography: {len(discography)} tracks")
 
-        # Step 4 — find missing
-        missing = matcher.find_missing(target_group_in_playlist, discography)
-        print(f"Missing tracks: {len(missing)}")
+            group_in_playlist = matcher.filter_by_artist(playlist_tracks, group)
+            print(f"  In your playlist: {len(group_in_playlist)} tracks")
 
-        # Step 5 — resolve video ids
-        resolved = matcher.resolve_video_ids(missing)
-        print(f"Resolved {len(resolved)} video IDs")
+            missing = matcher.find_missing(group_in_playlist, discography)
+            print(f"  Missing tracks: {len(missing)}")
 
-        # Step 6 — update playlists
-        manager.update_group_playlist(target_group, target_group_in_playlist)
-        manager.rebuild_new_playlist(target_group, resolved)
+            resolved = matcher.resolve_video_ids(missing)
+            print(f"  Resolved: {len(resolved)} video IDs")
 
+            manager.update_group_playlist(group, group_in_playlist)
+            manager.rebuild_new_playlist(group, resolved)
+
+        except ValueError as e:
+            print(f"  ❌ Artist not found: {e}")
+            continue
+        except ConnectionError as e:
+            print(f"  ❌ Network error: {e}")
+            continue
+        except Exception as e:
+            print(f"  ❌ Unexpected error processing {group}: {e}")
+            continue
+
+    print(f"\n  Processed {len(TARGET_GROUPS)} groups!")
 if __name__ == "__main__":
     main()
