@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-pop Playlist Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 K-pop Playlist Manager</h1>
+        <p class="subtitle">Automatically organise your YouTube Music library by group</p>
+
+        <form action="/run" method="POST">
+
+            <!-- Playlist URL -->
+            <div class="field">
+                <label>Playlist URL</label>
+                <input
+                    type="text"
+                    name="playlist_url"
+                    placeholder="https://music.youtube.com/playlist?list=..."
+                    required
+                >
+            </div>
+
+            <!-- Group Checkboxes -->
+            <div class="field">
+                <label>Select Groups</label>
+                <div id="group-list" class="group-list">
+                    {% for group in groups %}
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="groups" value="{{ group }}" checked>
+                        {{ group }}
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Add Custom Group -->
+            <div class="field">
+                <label>Add a Group</label>
+                <div class="add-group-row">
+                    <input
+                        type="text"
+                        id="new-group"
+                        placeholder="e.g. NewJeans"
+                    >
+                    <button type="button" onclick="addGroup()">+ Add</button>
+                </div>
+            </div>
+
+            <button type="submit" class="run-btn">▶ Run</button>
+        </form>
+    </div>
+
+    <script>
+        function addGroup() {
+            const input = document.getElementById("new-group");
+            const name = input.value.trim();
+            if (!name) return;
+
+            // Check if already exists
+            const existing = document.querySelectorAll('#group-list input[type="checkbox"]');
+            for (let cb of existing) {
+                if (cb.value.toLowerCase() === name.toLowerCase()) {
+                    alert(`${name} is already in the list`);
+                    return;
+                }
+            }
+
+            // Create new checkbox
+            const label = document.createElement("label");
+            label.className = "checkbox-label";
+            label.innerHTML = `
+                <input type="checkbox" name="groups" value="${name}" checked> ${name}
+            `;
+            document.getElementById("group-list").appendChild(label);
+            input.value = "";
+        }
+
+        // Allow pressing Enter to add group
+        document.getElementById("new-group").addEventListener("keypress", function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                addGroup();
+            }
+        });
+    </script>
+</body>
+</html>

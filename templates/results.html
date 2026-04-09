@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results — K-pop Playlist Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Results</h1>
+        <p class="subtitle">Scanned {{ total_tracks }} tracks from your playlist</p>
+
+        <div class="results">
+            {% for result in results %}
+            <div class="result-card {{ 'success' if result.success else 'error' }}">
+                {% if result.success %}
+                    <h2>✅ {{ result.group }}</h2>
+                    <div class="stats">
+                        <div class="stat">
+                            <span class="stat-label">In your playlist</span>
+                            <span class="stat-value">{{ result.in_playlist }} tracks</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Missing songs found</span>
+                            <span class="stat-value">{{ result.missing }} tracks</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Added to new_{{ result.group | lower }}</span>
+                            <span class="stat-value">{{ result.resolved }} tracks</span>
+                        </div>
+                    </div>
+                {% else %}
+                    <h2>❌ {{ result.group }}</h2>
+                    <p class="error-msg">{{ result.error }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <a href="/" class="back-btn">← Run Again</a>
+    </div>
+</body>
+</html>
