@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule — K-pop Playlist Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>⚙️ Schedule Settings</h1>
+        <p class="subtitle">Configure automatic monthly playlist updates</p>
+
+        {% if message %}
+        <div class="message">{{ message }}</div>
+        {% endif %}
+
+        <!-- Current Status -->
+        <div class="result-card success" style="margin-bottom: 24px;">
+            <h2>📅 Current Schedule</h2>
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-label">Runs on</span>
+                    <span class="stat-value">Day {{ schedule_day }} of each month</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">At</span>
+                    <span class="stat-value">{{ schedule_hour }}:00</span>
+                </div>
+                {% if next_run %}
+                <div class="stat">
+                    <span class="stat-label">Next run</span>
+                    <span class="stat-value">{{ next_run.strftime('%B %d, %Y at %H:%M') }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Update Schedule Form -->
+        <form action="/schedule" method="POST">
+            <div class="field">
+                <label>Playlist URL</label>
+                <input
+                    type="text"
+                    name="playlist_url"
+                    value="{{ playlist_url }}"
+                    placeholder="https://music.youtube.com/playlist?list=..."
+                >
+            </div>
+
+            <div class="field">
+                <label>Day of Month (1-28)</label>
+                <input
+                    type="number"
+                    name="day"
+                    min="1"
+                    max="28"
+                    value="{{ schedule_day }}"
+                >
+                <small style="color: #888; margin-top: 4px; display: block;">
+                    Max 28 to ensure it runs every month
+                </small>
+            </div>
+
+            <div class="field">
+                <label>Hour (0-23)</label>
+                <input
+                    type="number"
+                    name="hour"
+                    min="0"
+                    max="23"
+                    value="{{ schedule_hour }}"
+                >
+            </div>
+
+            <button type="submit" class="run-btn">💾 Save Schedule</button>
+        </form>
+
+        <!-- Manual Run -->
+        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #333;">
+            <h2 style="margin-bottom: 12px;">🚀 Manual Run</h2>
+            <p style="color: #888; margin-bottom: 16px; font-size: 0.9rem;">
+                Run the tool now using the current schedule settings
+            </p>
+            <a href="/run-now" class="run-btn" style="display: block; text-align: center; text-decoration: none;">
+                ▶ Run Now
+            </a>
+        </div>
+
+        <a href="/" class="back-btn" style="margin-top: 24px; display: inline-block;">
+            ← Back to Home
+        </a>
+    </div>
+</body>
+</html>

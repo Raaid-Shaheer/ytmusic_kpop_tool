@@ -7,8 +7,24 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <!-- Loading Overlay -->
+<div id="loading" style="display:none;">
+    <div class="loading-content">
+        <div class="spinner"></div>
+        <h2>Processing your playlist...</h2>
+        <p>This may take a few minutes depending on how many groups you selected.</p>
+        <div class="loading-steps">
+            <p>⏳ Scanning playlist tracks</p>
+            <p>⏳ Fetching discographies from MusicBrainz</p>
+            <p>⏳ Finding missing songs</p>
+            <p>⏳ Updating playlists</p>
+        </div>
+    </div>
+</div>
     <div class="container">
         <h1>🎵 K-pop Playlist Manager</h1>
+        <a href="/status" class="back-btn" style="margin-bottom: 24px; display: inline-block">
+    ⏰ Scheduler Status</a>
         <p class="subtitle">Automatically organise your YouTube Music library by group</p>
 
         <form action="/run" method="POST">
@@ -52,40 +68,55 @@
 
             <button type="submit" class="run-btn">▶ Run</button>
         </form>
+        <div style="margin-top: 24px; text-align: center;">
+            <a href="/schedule" style="color: #888; font-size: 0.9rem;">
+                ⚙️ Schedule Settings
+            </a>
+        </div>
     </div>
 
     <script>
         function addGroup() {
-            const input = document.getElementById("new-group");
-            const name = input.value.trim();
-            if (!name) return;
+        const input = document.getElementById("new-group");
+        const name = input.value.trim();
+        if (!name) return;
 
-            // Check if already exists
-            const existing = document.querySelectorAll('#group-list input[type="checkbox"]');
-            for (let cb of existing) {
-                if (cb.value.toLowerCase() === name.toLowerCase()) {
-                    alert(`${name} is already in the list`);
-                    return;
-                }
+        const existing = document.querySelectorAll('#group-list input[type="checkbox"]');
+        for (let cb of existing) {
+            if (cb.value.toLowerCase() === name.toLowerCase()) {
+                alert(`${name} is already in the list`);
+                return;
             }
-
-            // Create new checkbox
-            const label = document.createElement("label");
-            label.className = "checkbox-label";
-            label.innerHTML = `
-                <input type="checkbox" name="groups" value="${name}" checked> ${name}
-            `;
-            document.getElementById("group-list").appendChild(label);
-            input.value = "";
         }
 
-        // Allow pressing Enter to add group
-        document.getElementById("new-group").addEventListener("keypress", function(e) {
-            if (e.key === "Enter") {
-                e.preventDefault();
-                addGroup();
-            }
-        });
-    </script>
+        const label = document.createElement("label");
+        label.className = "checkbox-label";
+        label.innerHTML = `
+            <input type="checkbox" name="groups" value="${name}" checked> ${name}
+        `;
+        document.getElementById("group-list").appendChild(label);
+        input.value = "";
+    }
+
+    document.getElementById("new-group").addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            addGroup();
+        }
+    });
+
+    // Intercept form submission — show loading screen
+    document.querySelector("form").addEventListener("submit", function(e) {
+        const checked = document.querySelectorAll('input[name="groups"]:checked');
+        if (checked.length === 0) {
+            alert("Please select at least one group");
+            e.preventDefault();
+            return;
+        }
+        // Show loading overlay
+        document.getElementById("loading").style.display = "flex";
+        document.querySelector(".container").style.display = "none";
+    });
+</script>
 </body>
 </html>

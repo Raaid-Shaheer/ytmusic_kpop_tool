@@ -1,2 +1,4 @@
 browser.json
+cache/
 venv/
+__pycache__/
