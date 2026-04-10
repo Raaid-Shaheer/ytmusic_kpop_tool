@@ -1,13 +1,13 @@
 from typing import List
 from models.track import Track
-from auth.auth_manager import AuthManager
+from ytmusicapi import YTMusic
 from urllib.parse import urlparse,parse_qs
 
 
 class PlaylistScanner:
 
-    def __init__(self, auth_manager: AuthManager):
-        self._client = auth_manager.get_client()
+    def __init__(self, client: YTMusic):
+        self._client = client
 
 
     def scan(self, playlist_url: str) -> List[Track]:

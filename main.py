@@ -1,4 +1,4 @@
-from auth.auth_manager import AuthManager
+from ytmusicapi import YTMusic
 from core.playlist_scanner import PlaylistScanner
 from core.discography_fetcher import DiscographyFetcher
 from core.track_matcher import TrackMatcher

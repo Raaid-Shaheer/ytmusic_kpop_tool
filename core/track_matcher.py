@@ -2,13 +2,13 @@ import time
 from typing import List
 import re
 from models.track import Track
-from auth.auth_manager import AuthManager
+from ytmusicapi import YTMusic
 
 
 class TrackMatcher:
 
-    def __init__(self, auth_manager: AuthManager):
-        self._client = auth_manager.get_client()
+    def __init__(self, client: YTMusic):
+        self._client = client
 
     def _matches_artist(self, track: Track, artist_name: str) -> bool:
         pattern = rf'\b{re.escape(artist_name)}\b'

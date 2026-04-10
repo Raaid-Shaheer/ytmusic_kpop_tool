@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Setup - K-pop Playlist Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Connect Your YouTube Music Account</h1>
+
+        <!-- Step by step instructions -->
+        <div class="instructions">
+            <h2>How to get your headers</h2>
+            <ol>
+                <li>Open <a href="https://music.youtube.com" target="_blank">YouTube Music</a> and log in</li>
+                <li>Press <strong>F12</strong> to open DevTools</li>
+                <li>Click the <strong>Network</strong> tab</li>
+                <li>Play any song or click anything on the page</li>
+                <li>Look for a request to <strong>music.youtube.com</strong></li>
+                <li>Click it → scroll to <strong>Request Headers</strong></li>
+                <li>Copy everything in that section and paste below</li>
+            </ol>
+        </div>
+
+        <!-- Error messages -->
+        ___________
+
+        <!-- Missing fields -->
+        ___________
+
+        <!-- Form -->
+        <form method="POST">
+            <label for="headers">Paste your request headers here:</label>
+            <textarea
+                id="headers"
+                name="headers"
+                rows="15"
+                placeholder="accept: */*&#10;cookie: ...&#10;authorization: ...">
+            </textarea>
+            <button type="submit">Connect Account</button>
+        </form>
+    </div>
+</body>
+</html>

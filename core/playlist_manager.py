@@ -1,13 +1,13 @@
 from typing import List, Set
 from models.track import Track
-from auth.auth_manager import AuthManager
+from ytmusicapi import YTMusic
 import time
 
 
 class PlaylistManager:
 
-    def __init__(self, auth_manager: AuthManager):
-        self._client = auth_manager.get_client()
+    def __init__(self, client: YTMusic):
+        self._client = client
 
     def update_group_playlist(self, artist_name: str, tracks: List[Track]):
         playlist_id = self._get_or_create_playlist(artist_name)
