@@ -26,6 +26,7 @@
     <form id="delete-form" action="/delete-group" method="POST" style="display:none;">
         <input type="hidden" id="delete-group-input" name="group" value="">
     </form>
+    <form id="add-form" action="/add-group" method="POST" style="display:none;"></form>
 
     <div class="container">
         <h1>🎵 YtMusic Playlist Manager</h1>
@@ -58,18 +59,20 @@
                 </div>
             </div>
 
-            <!-- Add Custom Group -->
-            <div class="field">
-                <label>Add an Artist</label>
-                <div class="add-group-row">
-                    <input
-                        type="text"
-                        id="new-group"
-                        placeholder="e.g. NewJeans"
-                    >
-                    <button type="button" onclick="addGroup()">+ Add</button>
-                </div>
+                   <!-- Add Custom Group -->
+        <div class="field">
+            <label>Add an Artist</label>
+            <div class="add-group-row">
+                <input
+                    type="text"
+                    id="new-group"
+                    name="group"
+                    form="add-form"
+                    placeholder="e.g. NewJeans"
+                >
+                <button type="submit" form="add-form">+ Add</button>
             </div>
+        </div>
 
             <button type="submit" class="run-btn">▶ Run</button>
         </form>
@@ -112,7 +115,7 @@
         });
 
         // Intercept form submission — show loading screen
-        document.querySelector("form").addEventListener("submit", function(e) {
+        document.querySelector("form[action='/run']").addEventListener("submit", function(e) {
             const checked = document.querySelectorAll('input[name="groups"]:checked');
             if (checked.length === 0) {
                 alert("Please select at least one group");
