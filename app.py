@@ -7,7 +7,7 @@ from core.track_matcher import TrackMatcher
 from core.playlist_manager import PlaylistManager
 from clients.musicbrainz_client import MusicBrainzClient
 from auth.exceptions import NotAuthenticatedError
-from auth.header_parser import parse_headers,validate_headers
+from auth.header_parser import parse_headers
 import os
 
 app = Flask(__name__)
@@ -93,15 +93,10 @@ def setup():
         raw = request.form.get("headers", "")
         try:
             headers = parse_headers(raw)
-        except ValueError as e:
+        except Exception as e:
             return render_template("setup.html", error=str(e))
-        missing_groups = validate_headers(headers)
-
-        if missing_groups:
-            return render_template("setup.html", missing=missing_groups)
-        else:
-            session["headers"] = headers
-            return redirect(url_for("home"))
+        session["headers"] = headers
+        return redirect(url_for("home"))
 
     if request.method == "GET":
         return render_template("setup.html")

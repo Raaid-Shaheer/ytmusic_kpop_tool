@@ -1,6 +1,6 @@
 from ytmusicapi import YTMusic
 from flask import session
-import json
+
 
 from auth.exceptions import NotAuthenticatedError;
 
@@ -11,6 +11,6 @@ def get_ytmusic() -> YTMusic:
     if not headers:
         raise NotAuthenticatedError()
 
-    client = YTMusic(auth=json.dumps(headers))
+    client = YTMusic(auth=headers)
     print(" Authenticated with YouTube Music")
     return client
