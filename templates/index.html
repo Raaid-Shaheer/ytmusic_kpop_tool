@@ -76,15 +76,39 @@
 
             <button type="submit" class="run-btn">▶ Run</button>
         </form>
+                <!-- Custom confirm modal -->
+        <div id="modal-overlay" style="display:none;">
+            <div class="modal">
+                <p id="modal-message">Are you sure?</p>
+                <div class="modal-buttons">
+                    <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+                    <button class="modal-confirm" id="modal-confirm-btn">Remove</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         function deleteGroup(name) {
-            if (!confirm(`Remove ${name} from the list?`)) return;
-            document.getElementById("delete-group-input").value = name;
-            document.getElementById("delete-form").submit();
-            showToast(`${name} removed`, "success")
+            document.getElementById("modal-message").textContent = `Remove ${name} from your artist list?`;
+            document.getElementById("modal-overlay").style.display = "flex";
+
+            document.getElementById("modal-confirm-btn").onclick = function() {
+                closeModal();
+                document.getElementById("delete-group-input").value = name;
+                document.getElementById("delete-form").submit();
+                showToast(`${name} removed`, "success");
+            };
         }
+
+        function closeModal() {
+            document.getElementById("modal-overlay").style.display = "none";
+        }
+
+        // Close modal if user clicks outside it
+        document.getElementById("modal-overlay").addEventListener("click", function(e) {
+            if (e.target === this) closeModal();
+        });
         function showToast(message, type = "success") {
             const toast = document.createElement("div");
             toast.className = `toast ${type}`;
