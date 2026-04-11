@@ -421,3 +421,33 @@ textarea::placeholder { color: #333; }
 .delete-group-btn:hover {
     color: #ff4444;
 }
+
+.toast {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    color: #f0f0f0;
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast.success {
+    border-left: 3px solid #44ff88;
+}
+
+.toast.error {
+    border-left: 3px solid #ff4444;
+}
