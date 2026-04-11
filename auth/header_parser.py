@@ -19,7 +19,7 @@ def convert_headers(raw: str) -> str:
             key = line
             # Next line is the value
             value = lines[i + 1].strip() if i + 1 < len(lines) else ""
-            result.append(f"{key}:{value}")
+            result.append(f"{key}: {value}")
             i += 2
         else:
             i += 1
