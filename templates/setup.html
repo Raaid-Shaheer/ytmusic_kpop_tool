@@ -1,50 +1,63 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Setup - K-pop Playlist Manager</title>
+    <title>Setup - Playlist Manager</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1>🔐 Connect Your YouTube Music Account</h1>
+        <div class="badge">Step 1 of 2</div>
+        <h1>Connect your account</h1>
+        <p class="subtitle">Paste your YouTube Music request headers below to authenticate.</p>
 
-        <!-- Step by step instructions -->
-        <div class="instructions">
+        <div class="steps-card">
             <h2>How to get your headers</h2>
-            <ol>
-                <li>Open <a href="https://music.youtube.com" target="_blank">YouTube Music</a> and log in</li>
-                <li>Press <strong>F12</strong> to open DevTools</li>
-                <li>Click the <strong>Network</strong> tab</li>
-                <li>Play any song or click anything on the page(eg. Library)</li>
-                <li>Look for a request to <strong>music.youtube.com</strong></li>
-                <li>if not type  <strong>browse</strong></li>
-                <li>Click it → scroll to <strong>Request Headers</strong></li>
-                <li>Copy everything in that section and paste below</li>
-            </ol>
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-text">Open <a href="https://music.youtube.com" target="_blank" style="color:#ff4444">YouTube Music</a> and make sure you're logged in</div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-text">Press <strong>F12</strong> to open DevTools → click the <strong>Network</strong> tab</div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-text">Click anything on the page (e.g. Library). In the filter bar type <code>browse</code></div>
+            </div>
+            <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-text">Click any <strong>browse</strong> request → scroll to <strong>Request Headers</strong></div>
+            </div>
+            <div class="step">
+                <div class="step-num">5</div>
+                <div class="step-text">Right-click the headers section → <strong>Copy all</strong> → paste below</div>
+            </div>
         </div>
 
-        <!-- Error messages -->
         {% if error %}
-            <p> Looks like you haven't copied all the lines! Copy Everything {{ error }}</p>
+        <div class="error-box">
+            ⚠ Looks like you haven't copied all the lines — {{ error }}
+        </div>
         {% endif %}
 
-
-        <!-- Missing fields -->
         {% if missing %}
-            <p>Missing: {{ missing | join(", ") }}</p>
+        <div class="missing-box">
+            Some required fields are missing from your headers:
+            <div class="missing-fields">
+                {% for field in missing %}
+                <span class="missing-pill">{{ field }}</span>
+                {% endfor %}
+            </div>
+        </div>
         {% endif %}
 
-
-        <!-- Form -->
+        <label class="form-label">Request headers</label>
         <form method="POST">
-            <label for="headers">Paste your request headers here:</label>
             <textarea
-                id="headers"
                 name="headers"
-                rows="15"
-                placeholder="accept: */*&#10;cookie: ...&#10;authorization: ...">
+                placeholder="accept: */*&#10;authorization: SAPISIDHASH ...&#10;cookie: VISITOR_INFO1_LIVE=...&#10;x-origin: https://music.youtube.com">
             </textarea>
-            <button type="submit">Connect Account</button>
+            <button type="submit" class="run-btn">Connect account →</button>
         </form>
     </div>
 </body>
