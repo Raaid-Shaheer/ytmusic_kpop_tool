@@ -63,6 +63,8 @@ def process_playlist(playlist_url: str, selected_groups: list,scanner,matcher,ma
 
 @app.route("/")
 def home():
+    if session.get("headers") is  None:
+        return redirect(url_for("setup"))
     return render_template("index.html", groups=TARGET_GROUPS)
 
 
