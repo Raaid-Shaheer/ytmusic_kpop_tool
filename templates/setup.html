@@ -15,18 +15,25 @@
                 <li>Open <a href="https://music.youtube.com" target="_blank">YouTube Music</a> and log in</li>
                 <li>Press <strong>F12</strong> to open DevTools</li>
                 <li>Click the <strong>Network</strong> tab</li>
-                <li>Play any song or click anything on the page</li>
+                <li>Play any song or click anything on the page(eg. Library)</li>
                 <li>Look for a request to <strong>music.youtube.com</strong></li>
+                <li>if not type  <strong>browse</strong></li>
                 <li>Click it → scroll to <strong>Request Headers</strong></li>
                 <li>Copy everything in that section and paste below</li>
             </ol>
         </div>
 
         <!-- Error messages -->
-        ___________
+        {% if error %}
+            <p> Looks like you haven't copied all the lines! Copy Everything {{ error }}</p>
+        {% endif %}
+
 
         <!-- Missing fields -->
-        ___________
+        {% if missing %}
+            <p>Missing: {{ missing | join(", ") }}</p>
+        {% endif %}
+
 
         <!-- Form -->
         <form method="POST">

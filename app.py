@@ -8,15 +8,15 @@ from core.playlist_manager import PlaylistManager
 from clients.musicbrainz_client import MusicBrainzClient
 from auth.exceptions import NotAuthenticatedError
 from auth.header_parser import parse_headers,validate_headers
+import os
 
 app = Flask(__name__)
-app.secret_key = "change-this-in-production"
+app.secret_key = os.environ.get("SECRET_KEY", "change-this-in-production")
 
 # Initialise components once at startup
 
 mb_client = MusicBrainzClient()
 fetcher = DiscographyFetcher(mb_client=mb_client)
-app.secret_key = "change-this-in-production"
 
 # Track last run in memory
 last_run = {"time": None, "results": None}
