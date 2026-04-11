@@ -405,3 +405,19 @@ textarea {
 
 textarea:focus { border-color: #ff4444; }
 textarea::placeholder { color: #333; }
+
+.delete-group-btn {
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    font-size: 0.75rem;
+    padding: 0 0 0 6px;
+    line-height: 1;
+    transition: color 0.2s;
+    margin-left: 4px;
+}
+
+.delete-group-btn:hover {
+    color: #ff4444;
+}

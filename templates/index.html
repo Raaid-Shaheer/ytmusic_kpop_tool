@@ -3,27 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K-pop Playlist Manager</title>
+    <title>YtMusic Playlist Manager</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <!-- Loading Overlay -->
-<div id="loading" style="display:none;">
-    <div class="loading-content">
-        <div class="spinner"></div>
-        <h2>Processing your playlist...</h2>
-        <p>This may take a few minutes depending on how many groups you selected.</p>
-        <div class="loading-steps">
-            <p>⏳ Scanning playlist tracks</p>
-            <p>⏳ Fetching discographies from MusicBrainz</p>
-            <p>⏳ Finding missing songs</p>
-            <p>⏳ Updating playlists</p>
+    <div id="loading" style="display:none;">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <h2>Processing your playlist...</h2>
+            <p>This may take a few minutes depending on how many groups you selected.</p>
+            <div class="loading-steps">
+                <p>⏳ Scanning playlist tracks</p>
+                <p>⏳ Fetching discographies from MusicBrainz</p>
+                <p>⏳ Finding missing songs</p>
+                <p>⏳ Updating playlists</p>
+            </div>
         </div>
     </div>
-</div>
+
+    <!-- Hidden delete form — outside main form to avoid nesting -->
+    <form id="delete-form" action="/delete-group" method="POST" style="display:none;">
+        <input type="hidden" id="delete-group-input" name="group" value="">
+    </form>
+
     <div class="container">
-        <h1>🎵 K-pop Playlist Manager</h1>
-        <p class="subtitle">Automatically organise your YouTube Music library by group</p>
+        <h1>🎵 YtMusic Playlist Manager</h1>
+        <p class="subtitle">Automatically organise your YouTube Music library by artists you want to keep up with!</p>
 
         <form action="/run" method="POST">
 
@@ -40,12 +46,13 @@
 
             <!-- Group Checkboxes -->
             <div class="field">
-                <label>Select Groups</label>
+                <label>Select Artist</label>
                 <div id="group-list" class="group-list">
                     {% for group in groups %}
                     <label class="checkbox-label">
                         <input type="checkbox" name="groups" value="{{ group }}" checked>
                         {{ group }}
+                        <span class="delete-group-btn" onclick="deleteGroup('{{ group }}')">✕</span>
                     </label>
                     {% endfor %}
                 </div>
@@ -53,7 +60,7 @@
 
             <!-- Add Custom Group -->
             <div class="field">
-                <label>Add a Group</label>
+                <label>Add an Artist</label>
                 <div class="add-group-row">
                     <input
                         type="text"
@@ -66,51 +73,55 @@
 
             <button type="submit" class="run-btn">▶ Run</button>
         </form>
-
     </div>
 
     <script>
-        function addGroup() {
-        const input = document.getElementById("new-group");
-        const name = input.value.trim();
-        if (!name) return;
+        function deleteGroup(name) {
+            if (!confirm(`Remove ${name} from the list?`)) return;
+            document.getElementById("delete-group-input").value = name;
+            document.getElementById("delete-form").submit();
+        }
 
-        const existing = document.querySelectorAll('#group-list input[type="checkbox"]');
-        for (let cb of existing) {
-            if (cb.value.toLowerCase() === name.toLowerCase()) {
-                alert(`${name} is already in the list`);
+        function addGroup() {
+            const input = document.getElementById("new-group");
+            const name = input.value.trim();
+            if (!name) return;
+
+            const existing = document.querySelectorAll('#group-list input[type="checkbox"]');
+            for (let cb of existing) {
+                if (cb.value.toLowerCase() === name.toLowerCase()) {
+                    alert(`${name} is already in the list`);
+                    return;
+                }
+            }
+
+            const label = document.createElement("label");
+            label.className = "checkbox-label";
+            label.innerHTML = `
+                <input type="checkbox" name="groups" value="${name}" checked> ${name}
+            `;
+            document.getElementById("group-list").appendChild(label);
+            input.value = "";
+        }
+
+        document.getElementById("new-group").addEventListener("keypress", function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                addGroup();
+            }
+        });
+
+        // Intercept form submission — show loading screen
+        document.querySelector("form").addEventListener("submit", function(e) {
+            const checked = document.querySelectorAll('input[name="groups"]:checked');
+            if (checked.length === 0) {
+                alert("Please select at least one group");
+                e.preventDefault();
                 return;
             }
-        }
-
-        const label = document.createElement("label");
-        label.className = "checkbox-label";
-        label.innerHTML = `
-            <input type="checkbox" name="groups" value="${name}" checked> ${name}
-        `;
-        document.getElementById("group-list").appendChild(label);
-        input.value = "";
-    }
-
-    document.getElementById("new-group").addEventListener("keypress", function(e) {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            addGroup();
-        }
-    });
-
-    // Intercept form submission — show loading screen
-    document.querySelector("form").addEventListener("submit", function(e) {
-        const checked = document.querySelectorAll('input[name="groups"]:checked');
-        if (checked.length === 0) {
-            alert("Please select at least one group");
-            e.preventDefault();
-            return;
-        }
-        // Show loading overlay
-        document.getElementById("loading").style.display = "flex";
-        document.querySelector(".container").style.display = "none";
-    });
-</script>
+            document.getElementById("loading").style.display = "flex";
+            document.querySelector(".container").style.display = "none";
+        });
+    </script>
 </body>
 </html>

@@ -60,6 +60,13 @@ def process_playlist(playlist_url: str, selected_groups: list,scanner,matcher,ma
 
     return {"total_tracks": total_tracks, "results": results}
 
+def _save_config():
+    config_content = f'''# config.py — auto-updated
+SOURCE_PLAYLIST_URL = "{SOURCE_PLAYLIST_URL}"
+TARGET_GROUPS = {TARGET_GROUPS}
+'''
+    with open("config.py", "w") as f:
+        f.write(config_content)
 
 @app.route("/")
 def home():
@@ -100,5 +107,21 @@ def setup():
 
     if request.method == "GET":
         return render_template("setup.html")
+
+@app.route("/delete-group", methods=["POST"])
+def delete_group():
+    group = request.form.get("group")
+    if group in TARGET_GROUPS:
+        TARGET_GROUPS.remove(group)
+        _save_config()
+    return redirect(url_for("home"))
+
+@app.route("/add-group", methods=["POST"])
+def add_group():
+    group = request.form.get("group")
+    TARGET_GROUPS.append(group)
+    _save_config()
+    return redirect(url_for("home"))
+
 if __name__ == "__main__":
     app.run(debug=True)
