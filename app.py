@@ -103,6 +103,7 @@ def setup():
             session["headers"] = headers
             return redirect(url_for("home"))
 
-
+    if request.method == "GET":
+        return render_template("setup.html")
 if __name__ == "__main__":
     app.run(debug=True)
