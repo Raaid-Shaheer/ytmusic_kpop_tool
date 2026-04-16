@@ -1,63 +1,176 @@
 <!DOCTYPE html>
-<html>
+<html class="dark" lang="en">
 <head>
-    <title>Setup - Playlist Manager</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Account Setup</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,700;0,800;1,800&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "error-container": "#a70138",
+                "secondary-fixed": "#00eefc",
+                "surface-dim": "#0e0e13",
+                "surface-tint": "#ff83d5",
+                "error": "#ff6e84",
+                "on-primary": "#5c0048",
+                "on-surface": "#f8f5fd",
+                "tertiary-container": "#9d05ff",
+                "on-primary-fixed-variant": "#580045",
+                "on-primary-container": "#480038",
+                "surface-container": "#19191f",
+                "on-tertiary": "#340059",
+                "surface-container-lowest": "#000000",
+                "surface-container-highest": "#25252c",
+                "surface-container-low": "#131318",
+                "on-secondary-container": "#e3fdff",
+                "primary-dim": "#ff5fd0",
+                "secondary-fixed-dim": "#00deec",
+                "on-tertiary-fixed": "#280047",
+                "primary-fixed": "#ff66d0",
+                "secondary": "#00eefc",
+                "on-tertiary-container": "#ffffff",
+                "secondary-dim": "#00deec",
+                "primary-fixed-dim": "#ff3fcd",
+                "on-secondary-fixed": "#003f43",
+                "surface-bright": "#2c2b33",
+                "outline": "#76747b",
+                "on-tertiary-fixed-variant": "#580092",
+                "on-primary-fixed": "#000000",
+                "tertiary-fixed": "#d199ff",
+                "outline-variant": "#48474d",
+                "tertiary-fixed-dim": "#c787ff",
+                "on-secondary": "#005359",
+                "surface-variant": "#25252c",
+                "error-dim": "#d73357",
+                "tertiary": "#c47fff",
+                "secondary-container": "#006970",
+                "primary-container": "#ff66d0",
+                "on-error-container": "#ffb2b9",
+                "primary": "#ff83d5",
+                "inverse-primary": "#b2008e",
+                "inverse-on-surface": "#55545a",
+                "on-surface-variant": "#acaab1",
+                "inverse-surface": "#fbf8ff",
+                "background": "#0e0e13",
+                "surface-container-high": "#1f1f26",
+                "tertiary-dim": "#a533ff",
+                "on-background": "#f8f5fd",
+                "surface": "#0e0e13",
+                "on-error": "#490013",
+                "on-secondary-fixed-variant": "#005e64"
+            },
+            "borderRadius": {
+                "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"
+            },
+            "fontFamily": {
+                "headline": ["Plus Jakarta Sans"], "body": ["Manrope"], "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+      .neon-glow-primary { box-shadow: 0 0 15px rgba(255, 131, 213, 0.3); }
+      .bg-stage-texture {
+            background-image: linear-gradient(to bottom, rgba(14, 14, 19, 0.85), rgba(14, 14, 19, 0.95)),
+                              url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+      }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <div class="badge">Step 1 of 2</div>
-        <h1>Connect your account</h1>
-        <p class="subtitle">Paste your YouTube Music request headers below to authenticate.</p>
+<body class="bg-surface text-on-surface font-body min-h-screen bg-stage-texture">
 
-        <div class="steps-card">
-            <h2>How to get your headers</h2>
-            <div class="step">
-                <div class="step-num">1</div>
-                <div class="step-text">Open <a href="https://music.youtube.com" target="_blank" style="color:#ff4444">YouTube Music</a> and make sure you're logged in</div>
-            </div>
-            <div class="step">
-                <div class="step-num">2</div>
-                <div class="step-text">Press <strong>F12</strong> to open DevTools → click the <strong>Network</strong> tab</div>
-            </div>
-            <div class="step">
-                <div class="step-num">3</div>
-                <div class="step-text">Click anything on the page (e.g. Library). In the filter bar type <code>browse</code></div>
-            </div>
-            <div class="step">
-                <div class="step-num">4</div>
-                <div class="step-text">Click any <strong>browse</strong> request → scroll to <strong>Request Headers</strong></div>
-            </div>
-            <div class="step">
-                <div class="step-num">5</div>
-                <div class="step-text">Right-click the headers section → <strong>Copy all</strong> → paste below</div>
-            </div>
-        </div>
-
-        {% if error %}
-        <div class="error-box">
-            ⚠ Looks like you haven't copied all the lines — {{ error }}
-        </div>
-        {% endif %}
-
-        {% if missing %}
-        <div class="missing-box">
-            Some required fields are missing from your headers:
-            <div class="missing-fields">
-                {% for field in missing %}
-                <span class="missing-pill">{{ field }}</span>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
-        <label class="form-label">Request headers</label>
-        <form method="POST">
-            <textarea
-                name="headers"
-                placeholder="accept: */*&#10;authorization: SAPISIDHASH ...&#10;cookie: VISITOR_INFO1_LIVE=...&#10;x-origin: https://music.youtube.com"></textarea>
-            <button type="submit" class="run-btn">Connect account →</button>
-        </form>
+<header class="fixed top-0 w-full z-50 bg-[#0e0e13]/70 backdrop-blur-3xl px-6 py-4 flex justify-center items-center border-b border-white/5">
+    <div class="font-headline font-bold tracking-tighter text-2xl italic text-[#ff83d5] drop-shadow-[0_0_8px_rgba(255,131,213,0.5)]">
+        Disco-Syncer
     </div>
+</header>
+
+<main class="relative z-10 pt-32 pb-24 px-6 max-w-5xl mx-auto">
+    <div class="flex flex-col lg:flex-row gap-12">
+
+        <div class="flex-1 space-y-8">
+            <div>
+
+                <h1 class="font-headline text-5xl md:text-6xl font-extrabold tracking-tighter text-on-surface leading-none mb-4">
+                    Connect your <span class="text-secondary">account</span>
+                </h1>
+                <p class="text-on-surface-variant text-lg max-w-md font-medium">
+                    Paste your YouTube Music request headers below to authenticate your session.
+                </p>
+            </div>
+
+            {% if error %}
+            <div class="bg-error-container/10 border border-error/20 p-4 rounded-lg flex items-start gap-3 animate-pulse">
+                <span class="material-symbols-outlined text-error">warning</span>
+                <div>
+                    <p class="text-error font-bold text-sm">Authentication Failed</p>
+                    <p class="text-on-error-container text-xs opacity-80">{{ error }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            <form action="/setup" method="POST" class="space-y-4">
+                <div class="relative">
+                    <label class="block text-[10px] font-black text-secondary tracking-widest uppercase mb-2 ml-1">Request Headers</label>
+                    <textarea
+                        name="headers"
+                        required
+                        class="w-full h-80 bg-surface-container-lowest border-none rounded-lg p-6 font-mono text-sm text-on-surface-variant focus:ring-2 focus:ring-tertiary outline-none transition-all placeholder:opacity-30"
+                        placeholder="Accept: */*&#10;Accept-Language: en-US,en;q=0.9&#10;Cookie: SID=...&#10;x-youtube-client-name: 67"></textarea>
+                    <div class="absolute bottom-4 right-4 text-[10px] text-outline uppercase font-bold tracking-widest">
+                        Required
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full md:w-auto bg-gradient-to-br from-primary to-primary-container text-on-primary-fixed font-black px-10 py-4 rounded-full flex items-center justify-center gap-3 neon-glow-primary hover:scale-[1.02] active:scale-95 transition-all group">
+                    Connect Account
+                    <span class="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_forward</span>
+                </button>
+            </form>
+        </div>
+
+        <aside class="w-full lg:w-80 space-y-6">
+            <div class="bg-surface-container-low backdrop-blur-xl p-8 rounded-lg border border-outline-variant/10 shadow-2xl relative overflow-hidden group">
+                <div class="absolute -top-12 -right-12 w-32 h-32 bg-secondary/10 blur-[60px] rounded-full"></div>
+                <h3 class="font-headline text-xs font-black tracking-widest uppercase text-on-surface mb-8 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-secondary rounded-full"></span> Setup Guide
+                </h3>
+                <ul class="space-y-8 relative">
+                    <li class="flex gap-4">
+                        <span class="font-headline text-3xl font-black text-secondary/30 italic">01</span>
+                        <p class="text-sm text-on-surface-variant leading-relaxed">Open <strong>YouTube Music</strong> in your browser.</p>
+                    </li>
+                    <li class="flex gap-4">
+                        <span class="font-headline text-3xl font-black text-secondary/30 italic">02</span>
+                        <p class="text-sm text-on-surface-variant leading-relaxed">Press <kbd class="bg-surface-container-highest px-1 rounded border border-outline-variant/30 text-[10px]">F12</kbd> for DevTools.</p>
+                    </li>
+                    <li class="flex gap-4">
+                        <span class="font-headline text-3xl font-black text-secondary/30 italic">03</span>
+                        <p class="text-sm text-on-surface-variant leading-relaxed">Go to <strong>Network</strong> and refresh.</p>
+                    </li>
+                    <li class="flex gap-4">
+                        <span class="font-headline text-3xl font-black text-secondary/30 italic">04</span>
+                        <p class="text-sm text-on-surface-variant leading-relaxed">Find <code class="text-tertiary">browse</code>, right-click, and <strong>Copy Headers</strong>.</p>
+                    </li>
+                </ul>
+            </div>
+
+
+        </aside>
+    </div>
+</main>
+
+<footer class="fixed bottom-0 left-0 w-full h-32 pointer-events-none z-0 bg-gradient-to-t from-surface to-transparent"></footer>
+
 </body>
 </html>
