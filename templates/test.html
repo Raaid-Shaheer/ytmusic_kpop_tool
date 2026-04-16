@@ -1,0 +1,269 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Neon Stage | YtMusic Playlist Manager</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#580045",
+                        "surface-container-low": "#131318",
+                        "on-primary-fixed": "#000000",
+                        "tertiary-dim": "#a533ff",
+                        "background": "#0e0e13",
+                        "surface": "#0e0e13",
+                        "error-dim": "#d73357",
+                        "on-primary": "#5c0048",
+                        "tertiary": "#c47fff",
+                        "primary-container": "#ff66d0",
+                        "inverse-primary": "#b2008e",
+                        "primary-fixed": "#ff66d0",
+                        "primary-fixed-dim": "#ff3fcd",
+                        "surface-dim": "#0e0e13",
+                        "error-container": "#a70138",
+                        "error": "#ff6e84",
+                        "secondary-container": "#006970",
+                        "primary-dim": "#ff5fd0",
+                        "primary": "#ff83d5",
+                        "on-secondary-fixed-variant": "#005e64",
+                        "on-surface": "#f8f5fd",
+                        "surface-bright": "#2c2b33",
+                        "on-background": "#f8f5fd",
+                        "inverse-surface": "#fbf8ff",
+                        "on-tertiary-fixed-variant": "#580092",
+                        "on-secondary-fixed": "#003f43",
+                        "tertiary-fixed-dim": "#c787ff",
+                        "surface-container-high": "#1f1f26",
+                        "secondary-fixed-dim": "#00deec",
+                        "secondary": "#00eefc",
+                        "on-secondary-container": "#e3fdff",
+                        "outline": "#76747b",
+                        "surface-container-highest": "#25252c",
+                        "on-tertiary": "#340059",
+                        "surface-container-lowest": "#000000",
+                        "on-tertiary-container": "#ffffff",
+                        "secondary-fixed": "#00eefc",
+                        "tertiary-fixed": "#d199ff",
+                        "on-error": "#490013",
+                        "on-error-container": "#ffb2b9",
+                        "surface-container": "#19191f",
+                        "inverse-on-surface": "#55545a",
+                        "on-secondary": "#005359",
+                        "on-primary-container": "#480038",
+                        "surface-tint": "#ff83d5",
+                        "tertiary-container": "#9d05ff",
+                        "outline-variant": "#48474d",
+                        "on-surface-variant": "#acaab1",
+                        "secondary-dim": "#00deec",
+                        "on-tertiary-fixed": "#280047",
+                        "surface-variant": "#25252c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Manrope"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24
+    }
+.bg-aura-glow {
+    background: radial-gradient(circle at 10% 20%, rgba(255, 131, 213, 0.07) 0%, transparent 50%), radial-gradient(circle at 90% 80%, rgba(0, 238, 252, 0.05) 0%, transparent 50%), radial-gradient(circle at 50% 50%, rgba(165, 51, 255, 0.03) 0%, transparent 70%)
+    }
+.bg-lightstick-textured {
+    background-image: url(https://lh3.googleusercontent.com/aida/ADBb0uhQ4cmIIDbqtBOeBXYA4wwy00WEHjrwog-CybsVysEI-Y8k9YHDk5ujkL0HoqHCjRG2MPnE8a9tTfcmfAPy-IzzBUZYTevkMy6QBtzRLVrwvAz-zFD0t_ELCiF2y9bcRUhMU4z4bNisetvBD6dhfJAeQzT9jMTw4_hpyJANDuk2KThQ3QXepJ2JlkJbzMF7QMTrr4iqFq3UCC2mlu--T0n3eiowlmaGKw1i5zASQooSCa7zodzxnWhFsoI);
+    background-size: cover;
+    background-position: center;
+    opacity: 0.12;
+    mix-blend-mode: screen
+    }</style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary selection:text-on-primary-fixed min-h-screen relative overflow-x-hidden">
+<!-- Ambient Aura Background -->
+<div class="fixed inset-0 bg-aura-glow pointer-events-none -z-10"></div>
+<!-- Lightstick Textured Background Layer -->
+<div class="fixed inset-0 bg-lightstick-textured pointer-events-none -z-10"></div>
+<!-- Top Navigation Bar (Shared Component Strategy) -->
+<header class="bg-neutral-950/70 backdrop-blur-xl font-plus-jakarta-sans tracking-tighter shadow-[0_4px_30px_rgba(0,0,0,0.1)] sticky top-0 z-50 flex justify-between items-center w-full px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: &quot;FILL&quot; 1;">queue_music</span>
+<h1 class="text-2xl font-black italic text-[#ff83d5] drop-shadow-[0_0_8px_rgba(255,131,213,0.5)]" style="">Neon Stage</h1>
+</div>
+<nav class="hidden md:flex gap-8">
+<a class="text-[#ff83d5] border-b-2 border-[#ff83d5] py-1 font-semibold hover:text-[#00eefc] transition-colors duration-300" href="#" style="">Playlist Manager</a>
+<a class="text-neutral-400 py-1 font-semibold hover:text-[#00eefc] transition-colors duration-300" href="#" style="">Artist Radar</a>
+<a class="text-neutral-400 py-1 font-semibold hover:text-[#00eefc] transition-colors duration-300" href="#" style="">Stage Analytics</a>
+</nav>
+<div class="flex items-center gap-4 text-primary">
+<button class="material-symbols-outlined hover:text-[#00eefc] transition-colors" style="">settings</button>
+<button class="material-symbols-outlined hover:text-[#00eefc] transition-colors" style="">account_circle</button>
+</div>
+</header>
+<main class="max-w-4xl mx-auto px-6 py-12 lg:py-20">
+<!-- Hero Section -->
+<div class="mb-12 text-center">
+<h2 class="font-headline text-5xl md:text-7xl font-extrabold tracking-tighter text-on-surface mb-4" style="">
+                YtMusic <span class="text-primary italic" style="">Playlist Manager</span>
+</h2>
+<p class="text-on-surface-variant font-medium tracking-widest uppercase text-xs opacity-70" style="">
+                Curating the Electric Edge of Modern K-Pop
+            </p>
+</div>
+<!-- Main Interaction Card (Glassmorphism) -->
+<div class="bg-surface-container/60 backdrop-blur-3xl rounded-xl p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/5 relative overflow-hidden">
+<!-- Decorative Accent -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-secondary/10 blur-[60px] rounded-full"></div>
+<form action="/run" class="space-y-12" method="POST">
+<!-- URL Input Section -->
+<div class="space-y-4">
+<label class="block font-headline text-sm font-bold uppercase tracking-widest text-secondary ml-1" style="">Playlist Source URL</label>
+<div class="relative group">
+<input class="w-full bg-surface-container-lowest border-none rounded-lg px-6 py-5 text-on-surface placeholder:text-outline-variant focus:ring-2 focus:ring-tertiary transition-all outline-none" name="playlist_url" placeholder="https://music.youtube.com/playlist?list=..." type="text">
+<div class="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-transparent via-tertiary to-transparent opacity-0 group-focus-within:opacity-100 blur-sm transition-opacity"></div>
+</div>
+</div>
+<!-- Artist Selection Chips -->
+<div class="space-y-6">
+<div class="flex justify-between items-end">
+<label class="block font-headline text-sm font-bold uppercase tracking-widest text-primary ml-1" style="">Target Artists</label>
+<span class="text-[10px] text-on-surface-variant font-bold uppercase" style="">Multi-select enabled</span>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-3" style="">
+<!-- Artist Chips Loop -->
+                        {% for group in groups %}
+                        <div class="relative group flex items-center bg-surface-container-low hover:bg-surface-container-high border border-white/5 p-3 rounded-full transition-all duration-300">
+<input checked="" class="w-5 h-5 rounded-full border-2 border-secondary/30 bg-surface-container-highest text-secondary focus:ring-offset-0 focus:ring-secondary cursor-pointer" name="selected_groups" type="checkbox" value="{{ group }}">
+<span class="ml-3 font-semibold text-sm text-on-surface truncate pr-8" style="">{{ group }}</span>
+<!-- Delete Action -->
+<input name="group_name" type="hidden" value="{{ group }}">
+<button class="w-7 h-7 flex items-center justify-center rounded-full bg-error-container/20 text-error hover:bg-error-container transition-colors" type="submit" style="">
+<span class="material-symbols-outlined text-sm" style="">close</span>
+</button>
+</div>
+                        {% endfor %}
+
+                        <!-- Example Static Chips (Representing common K-Pop groups) -->
+<div class="relative group flex items-center bg-surface-container-low p-3 rounded-full">
+<input checked="" class="w-5 h-5 rounded-full border-2 border-secondary/30 bg-surface-container-highest text-secondary" type="checkbox">
+<span class="ml-3 font-semibold text-sm text-on-surface" style="">NewJeans</span>
+</div>
+<div class="relative group flex items-center bg-surface-container-low p-3 rounded-full">
+<input checked="" class="w-5 h-5 rounded-full border-2 border-secondary/30 bg-surface-container-highest text-secondary" type="checkbox">
+<span class="ml-3 font-semibold text-sm text-on-surface" style="">LE SSERAFIM</span>
+</div>
+</div>
+</div>
+</form>
+<!-- Add Artist Input -->
+<div class="pt-6 border-t border-white/5">
+<div class="flex flex-col md:flex-row gap-3">
+<input class="flex-grow bg-surface-container-low border-none rounded-full px-6 py-3 text-sm focus:ring-1 focus:ring-secondary transition-all" id="new-artist-name" placeholder="Enter artist or group name..." type="text">
+<button class="bg-secondary-container/20 text-secondary border border-secondary/20 font-bold px-8 py-3 rounded-full hover:bg-secondary hover:text-on-secondary transition-all flex items-center justify-center gap-2" onclick="addArtistAction()" type="button" style="">
+<span class="material-symbols-outlined text-xl" style="">add</span>
+                        ADD ARTIST
+                    </button>
+</div>
+</div>
+<!-- Main Execution Button -->
+<div class="pt-10 flex flex-col items-center gap-4">
+<button class="group relative px-16 py-5 bg-primary rounded-full font-black tracking-[0.2em] text-on-primary-fixed uppercase shadow-[0_0_20px_rgba(255,131,213,0.4)] hover:shadow-[0_0_40px_rgba(255,131,213,0.6)] active:scale-95 transition-all duration-300" type="submit" style="">
+<span class="relative z-10" style="">Initiate Sync</span>
+<div class="absolute inset-0 bg-white/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</button>
+<p class="text-on-surface-variant text-[10px] font-bold uppercase tracking-widest animate-pulse" style="">Ready for performance</p>
+</div>
+</div>
+<!-- Secondary Info Cards -->
+<div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-surface-container-low/80 backdrop-blur-sm p-6 rounded-lg border border-white/5">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-tertiary" style="">insights</span>
+<h4 class="font-headline font-bold text-lg" style=""><br></h4>
+</div>
+<div class="space-y-2">
+<div class="h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-3/4"></div>
+</div>
+<p class="text-xs text-on-surface-variant" style="">Playlist coverage optimized for high-energy playback.</p>
+</div>
+</div>
+<div class="bg-surface-container-low/80 backdrop-blur-sm p-6 rounded-lg border border-white/5">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-secondary" style="">verified_user</span>
+<h4 class="font-headline font-bold text-lg" style=""><br></h4>
+</div>
+<p class="text-xs text-on-surface-variant" style="">Automated filtering ensures zero duplicate tracks and cross-referenced metadata.</p>
+</div>
+</div>
+</main>
+<!-- Loading Overlay (Initial Hidden State) -->
+<div class="fixed inset-0 bg-background/90 backdrop-blur-md z-[100] flex flex-col items-center justify-center hidden" id="loading-overlay">
+<div class="relative w-48 h-48 flex items-center justify-center">
+<!-- Animated Spinner -->
+<div class="absolute inset-0 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+<div class="absolute inset-4 border-4 border-secondary/20 border-b-secondary rounded-full animate-[spin_1.5s_linear_infinite_reverse]"></div>
+<span class="material-symbols-outlined text-4xl text-primary animate-pulse" style="font-variation-settings: &quot;FILL&quot; 1;">graphic_eq</span>
+</div>
+<h3 class="mt-8 font-headline text-3xl font-black text-on-surface tracking-widest uppercase" style="">Processing Stage</h3>
+<p class="mt-2 text-on-surface-variant text-sm font-medium" style="">Curating your electric playlist atmosphere...</p>
+</div>
+<!-- Hidden Support Forms -->
+<form action="/add-group" id="add-artist-form" method="POST" style="display:none;">
+<input id="hidden-group-name" name="group_name" type="hidden">
+</form>
+<!-- Bottom Navigation Bar (Mobile Only - Shared Component) -->
+<div class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-6 pb-6 pt-3 md:hidden bg-neutral-950/60 backdrop-blur-3xl shadow-[0_-10px_40px_rgba(255,131,213,0.1)] rounded-t-[2rem] border-t border-white/5">
+<button class="flex flex-col items-center justify-center text-[#ff83d5] bg-[#ff83d5]/10 rounded-full px-4 py-1" style="">
+<span class="material-symbols-outlined" style="">home</span>
+<span class="font-manrope text-[10px] font-bold" style="">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-neutral-500" style="">
+<span class="material-symbols-outlined" style="">library_music</span>
+<span class="font-manrope text-[10px] font-bold" style="">Library</span>
+</button>
+<button class="flex flex-col items-center justify-center text-neutral-500" style="">
+<span class="material-symbols-outlined" style="">graphic_eq</span>
+<span class="font-manrope text-[10px] font-bold" style="">Mixes</span>
+</button>
+<button class="flex flex-col items-center justify-center text-neutral-500" style="">
+<span class="material-symbols-outlined" style="">person</span>
+<span class="font-manrope text-[10px] font-bold" style="">Profile</span>
+</button>
+</div>
+<script>
+        function addArtistAction() {
+            const artistInput = document.getElementById('new-artist-name');
+            const artistName = artistInput.value.trim();
+            if (artistName) {
+                document.getElementById('hidden-group-name').value = artistName;
+                document.getElementById('add-artist-form').submit();
+            }
+        }
+
+        // Show loading overlay on form submission
+        document.querySelector('form[action="/run"]')?.addEventListener('submit', function() {
+            document.getElementById('loading-overlay').classList.remove('hidden');
+        });
+
+        // Background decorative images (editorial style)
+        const decoImage = document.createElement('div');
+        decoImage.className = "fixed -bottom-20 -left-20 w-96 h-96 opacity-10 blur-xl pointer-events-none -z-10 bg-cover bg-center rounded-full";
+        decoImage.style.backgroundImage = "url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80')";
+        decoImage.setAttribute('data-alt', "Abstract neon stage lights blurred with cosmic textures and deep violet glows");
+        document.body.appendChild(decoImage);
+    </script><div class="fixed -bottom-20 -left-20 w-96 h-96 opacity-10 blur-xl pointer-events-none -z-10 bg-cover bg-center rounded-full" data-alt="Abstract neon stage lights blurred with cosmic textures and deep violet glows" style="background-image: url(&quot;https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&amp;fit=crop&amp;q=80&quot;);"></div>
+</body></html>

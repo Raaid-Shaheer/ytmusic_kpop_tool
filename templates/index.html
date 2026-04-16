@@ -1,166 +1,216 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YtMusic Playlist Manager</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Neon Stage | YtMusic Playlist Manager</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#580045",
+                        "surface-container-low": "#131318",
+                        "on-primary-fixed": "#000000",
+                        "tertiary-dim": "#a533ff",
+                        "background": "#0e0e13",
+                        "surface": "#0e0e13",
+                        "error-dim": "#d73357",
+                        "on-primary": "#5c0048",
+                        "tertiary": "#c47fff",
+                        "primary-container": "#ff66d0",
+                        "inverse-primary": "#b2008e",
+                        "primary-fixed": "#ff66d0",
+                        "primary-fixed-dim": "#ff3fcd",
+                        "surface-dim": "#0e0e13",
+                        "error-container": "#a70138",
+                        "error": "#ff6e84",
+                        "secondary-container": "#006970",
+                        "primary-dim": "#ff5fd0",
+                        "primary": "#ff83d5",
+                        "on-secondary-fixed-variant": "#005e64",
+                        "on-surface": "#f8f5fd",
+                        "surface-bright": "#2c2b33",
+                        "on-background": "#f8f5fd",
+                        "inverse-surface": "#fbf8ff",
+                        "on-tertiary-fixed-variant": "#580092",
+                        "on-secondary-fixed": "#003f43",
+                        "tertiary-fixed-dim": "#c787ff",
+                        "surface-container-high": "#1f1f26",
+                        "secondary-fixed-dim": "#00deec",
+                        "secondary": "#00eefc",
+                        "on-secondary-container": "#e3fdff",
+                        "outline": "#76747b",
+                        "surface-container-highest": "#25252c",
+                        "on-tertiary": "#340059",
+                        "surface-container-lowest": "#000000",
+                        "on-tertiary-container": "#ffffff",
+                        "secondary-fixed": "#00eefc",
+                        "tertiary-fixed": "#d199ff",
+                        "on-error": "#490013",
+                        "on-error-container": "#ffb2b9",
+                        "surface-container": "#19191f",
+                        "inverse-on-surface": "#55545a",
+                        "on-secondary": "#005359",
+                        "on-primary-container": "#480038",
+                        "surface-tint": "#ff83d5",
+                        "tertiary-container": "#9d05ff",
+                        "outline-variant": "#48474d",
+                        "on-surface-variant": "#acaab1",
+                        "secondary-dim": "#00deec",
+                        "on-tertiary-fixed": "#280047",
+                        "surface-variant": "#25252c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Manrope"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24 }
+        .bg-aura-glow { background: radial-gradient(circle at 10% 20%, rgba(255, 131, 213, 0.07) 0%, transparent 50%), radial-gradient(circle at 90% 80%, rgba(0, 238, 252, 0.05) 0%, transparent 50%), radial-gradient(circle at 50% 50%, rgba(165, 51, 255, 0.03) 0%, transparent 70%) }
+    </style>
 </head>
-<body>
-    <!-- Loading Overlay -->
-    <div id="loading" style="display:none;">
-        <div class="loading-content">
-            <div class="spinner"></div>
-            <h2>Processing your playlist...</h2>
-            <p>This may take a few minutes depending on how many groups you selected.</p>
-            <div class="loading-steps">
-                <p>⏳ Scanning playlist tracks</p>
-                <p>⏳ Fetching discographies from MusicBrainz</p>
-                <p>⏳ Finding missing songs</p>
-                <p>⏳ Updating playlists</p>
-            </div>
-        </div>
-    </div>
+<body class="bg-background text-on-surface font-body min-h-screen relative overflow-x-hidden">
 
-    <!-- Hidden delete form — outside main form to avoid nesting -->
     <form id="delete-form" action="/delete-group" method="POST" style="display:none;">
         <input type="hidden" id="delete-group-input" name="group" value="">
     </form>
-    <form id="add-form" action="/add-group" method="POST" style="display:none;"></form>
+    <form id="add-artist-form" action="/add-group" method="POST" style="display:none;">
+        <input id="hidden-group-name" name="group" type="hidden">
+    </form>
 
-    <div class="container">
-        <h1>🎵 YtMusic Playlist Manager</h1>
-        <p class="subtitle">Automatically organise your YouTube Music library by artists you want to keep up with!</p>
+    <div class="fixed inset-0 bg-aura-glow pointer-events-none -z-10"></div>
 
-        <form action="/run" method="POST">
+    <header class="bg-neutral-950/70 backdrop-blur-xl sticky top-0 z-50 flex justify-between items-center w-full px-6 py-4">
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">queue_music</span>
+            <h1 class="text-2xl font-black italic text-[#ff83d5]">Neon Stage</h1>
+        </div>
+    </header>
 
-            <!-- Playlist URL -->
-            <div class="field">
-                <label>Playlist URL</label>
-                <input
-                    type="text"
-                    name="playlist_url"
-                    placeholder="https://music.youtube.com/playlist?list=..."
-                    required
-                >
-            </div>
-
-            <!-- Group Checkboxes -->
-            <div class="field">
-                <label>Select Artist</label>
-                <div id="group-list" class="group-list">
-                    {% for group in groups %}
-                    <label class="checkbox-label">
-                        <input type="checkbox" name="groups" value="{{ group }}" checked>
-                        {{ group }}
-                        <span class="delete-group-btn" onclick="deleteGroup('{{ group }}')">✕</span>
-                    </label>
-                    {% endfor %}
-                </div>
-            </div>
-
-                   <!-- Add Custom Group -->
-        <div class="field">
-            <label>Add an Artist</label>
-            <div class="add-group-row">
-                <input
-                    type="text"
-                    id="new-group"
-                    name="group"
-                    form="add-form"
-                    placeholder="e.g. NewJeans"
-                >
-                <button type="submit" form="add-form">+ Add</button>
-            </div>
+    <main class="max-w-4xl mx-auto px-6 py-12">
+        <div class="mb-12 text-center">
+            <h2 class="font-headline text-5xl md:text-6xl font-extrabold tracking-tighter text-on-surface mb-4">
+                YtMusic <span class="text-primary italic">Manager</span>
+            </h2>
         </div>
 
-            <button type="submit" class="run-btn">▶ Run</button>
-        </form>
-                <!-- Custom confirm modal -->
-        <div id="modal-overlay" style="display:none;">
-            <div class="modal">
-                <p id="modal-message">Are you sure?</p>
-                <div class="modal-buttons">
-                    <button class="modal-cancel" onclick="closeModal()">Cancel</button>
-                    <button class="modal-confirm" id="modal-confirm-btn">Remove</button>
+        <div class="bg-surface-container/60 backdrop-blur-3xl rounded-xl p-8 shadow-2xl border border-white/5">
+            <form id="run-form" action="/run" method="POST" class="space-y-12">
+                <div class="space-y-4">
+                    <label class="block font-headline text-sm font-bold uppercase tracking-widest text-secondary ml-1">Playlist Source URL</label>
+                    <input class="w-full bg-surface-container-lowest border-none rounded-lg px-6 py-5 text-on-surface placeholder:text-outline-variant focus:ring-2 focus:ring-tertiary outline-none"
+                           name="playlist_url" placeholder="https://music.youtube.com/playlist?list=..." type="text" required>
                 </div>
+
+                <div class="space-y-6">
+                    <label class="block font-headline text-sm font-bold uppercase tracking-widest text-primary ml-1">Target Artists</label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        {% for group in groups %}
+                        <div class="relative group flex items-center justify-between bg-surface-container-low hover:bg-surface-container-high border border-white/5 p-3 rounded-full transition-all">
+                            <div class="flex items-center">
+                                <input checked class="w-5 h-5 rounded-full border-2 border-secondary/30 bg-surface-container-highest text-secondary focus:ring-secondary cursor-pointer"
+                                       name="groups" type="checkbox" value="{{ group }}">
+                                <span class="ml-3 font-semibold text-sm text-on-surface truncate">{{ group }}</span>
+                            </div>
+                            <button type="button" onclick="deleteGroup('{{ group }}')" class="w-7 h-7 flex items-center justify-center rounded-full bg-error-container/20 text-error hover:bg-error-container transition-colors">
+                                <span class="material-symbols-outlined text-sm">close</span>
+                            </button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="pt-10 flex flex-col items-center gap-4">
+                    <button type="submit" class="group relative px-16 py-5 bg-primary rounded-full font-black tracking-widest text-on-primary-fixed uppercase shadow-lg hover:shadow-primary/40 active:scale-95 transition-all">
+                        <span class="relative z-10">Initiate Sync</span>
+                    </button>
+                    <p class="text-on-surface-variant text-[10px] font-bold uppercase tracking-widest animate-pulse">Ready for performance</p>
+                </div>
+            </form>
+
+            <div class="mt-10 pt-6 border-t border-white/5">
+                <div class="flex flex-col md:flex-row gap-3">
+                    <input class="flex-grow bg-surface-container-low border-none rounded-full px-6 py-3 text-sm focus:ring-1 focus:ring-secondary transition-all"
+                           id="new-artist-name" placeholder="Enter artist or group name..." type="text">
+                    <button onclick="addArtistAction()" class="bg-secondary-container/20 text-secondary border border-secondary/20 font-bold px-8 py-3 rounded-full hover:bg-secondary hover:text-on-secondary transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-xl">add</span> ADD
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="fixed inset-0 bg-background/95 backdrop-blur-md z-[100] flex flex-col items-center justify-center hidden" id="loading-overlay">
+        <div class="relative w-32 h-32 flex items-center justify-center mb-8">
+            <div class="absolute inset-0 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+            <span class="material-symbols-outlined text-4xl text-primary animate-pulse">graphic_eq</span>
+        </div>
+        <h3 class="font-headline text-2xl font-black text-on-surface tracking-widest uppercase">Processing Stage</h3>
+        <div class="mt-6 space-y-2 text-center text-sm font-medium text-on-surface-variant">
+            <p>⏳ Scanning playlist tracks</p>
+            <p>⏳ Fetching discographies from MusicBrainz</p>
+            <p>⏳ Finding missing songs</p>
+            <p>⏳ Updating playlists</p>
+        </div>
+    </div>
+
+    <div id="modal-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[110] flex items-center justify-center hidden">
+        <div class="bg-surface-container p-8 rounded-xl border border-white/10 max-w-xs w-full text-center">
+            <p id="modal-message" class="text-on-surface font-bold mb-6">Remove artist?</p>
+            <div class="flex gap-4">
+                <button onclick="closeModal()" class="flex-1 py-2 rounded-full bg-surface-variant text-on-surface">Cancel</button>
+                <button id="modal-confirm-btn" class="flex-1 py-2 rounded-full bg-error text-on-error font-bold">Remove</button>
             </div>
         </div>
     </div>
 
     <script>
-        function deleteGroup(name) {
-            document.getElementById("modal-message").textContent = `Remove ${name} from your artist list?`;
-            document.getElementById("modal-overlay").style.display = "flex";
+        function addArtistAction() {
+            const artistInput = document.getElementById('new-artist-name');
+            const artistName = artistInput.value.trim();
+            if (artistName) {
+                document.getElementById('hidden-group-name').value = artistName;
+                document.getElementById('add-artist-form').submit();
+            }
+        }
 
+        function deleteGroup(name) {
+            document.getElementById("modal-message").textContent = `Remove ${name} from your list?`;
+            document.getElementById("modal-overlay").classList.remove('hidden');
             document.getElementById("modal-confirm-btn").onclick = function() {
-                closeModal();
                 document.getElementById("delete-group-input").value = name;
                 document.getElementById("delete-form").submit();
-                showToast(`${name} removed`, "success");
             };
         }
 
         function closeModal() {
-            document.getElementById("modal-overlay").style.display = "none";
+            document.getElementById("modal-overlay").classList.add('hidden');
         }
 
-        // Close modal if user clicks outside it
-        document.getElementById("modal-overlay").addEventListener("click", function(e) {
-            if (e.target === this) closeModal();
-        });
-        function showToast(message, type = "success") {
-            const toast = document.createElement("div");
-            toast.className = `toast ${type}`;
-            toast.textContent = message;
-            document.body.appendChild(toast);
-
-            setTimeout(() => toast.classList.add("show"), 10);
-            setTimeout(() => {
-                toast.classList.remove("show");
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-
-        function addGroup() {
-            const input = document.getElementById("new-group");
-            const name = input.value.trim();
-            if (!name) return;
-
-            const existing = document.querySelectorAll('#group-list input[type="checkbox"]');
-            for (let cb of existing) {
-                if (cb.value.toLowerCase() === name.toLowerCase()) {
-                    alert(`${name} is already in the list`);
-                    return;
-                }
-            }
-
-            const label = document.createElement("label");
-            label.className = "checkbox-label";
-            label.innerHTML = `
-                <input type="checkbox" name="groups" value="${name}" checked> ${name}
-            `;
-            document.getElementById("group-list").appendChild(label);
-            input.value = "";
-        }
-
-        document.getElementById("new-group").addEventListener("keypress", function(e) {
-            if (e.key === "Enter") {
-                e.preventDefault();
-                addGroup();
-            }
-        });
-
-        // Intercept form submission — show loading screen
-        document.querySelector("form[action='/run']").addEventListener("submit", function(e) {
+        document.getElementById('run-form').addEventListener('submit', function(e) {
             const checked = document.querySelectorAll('input[name="groups"]:checked');
             if (checked.length === 0) {
-                alert("Please select at least one group");
+                alert("Please select at least one artist");
                 e.preventDefault();
                 return;
             }
-            document.getElementById("loading").style.display = "flex";
-            document.querySelector(".container").style.display = "none";
+            document.getElementById('loading-overlay').classList.remove('hidden');
         });
     </script>
 </body>
