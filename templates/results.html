@@ -1,44 +1,129 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Results — K-pop Playlist Manager</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Stage Results | Neon Stage</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,700;0,800;1,800&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "background": "#0e0e13",
+                "surface": "#0e0e13",
+                "primary": "#ff83d5",
+                "secondary": "#00eefc",
+                "tertiary": "#c47fff",
+                "error": "#ff6e84",
+                "on-surface": "#f8f5fd",
+                "on-surface-variant": "#acaab1",
+                "surface-container": "#19191f",
+                "surface-container-low": "#131318",
+                "surface-container-highest": "#25252c"
+            },
+            "borderRadius": { "DEFAULT": "1rem", "lg": "2rem", "full": "9999px" },
+            "fontFamily": { "headline": ["Plus Jakarta Sans"], "body": ["Manrope"] }
+          },
+        },
+      }
+    </script>
+    <style>
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+      .bg-stage-texture {
+            background-image: linear-gradient(to bottom, rgba(14, 14, 19, 0.9), rgba(14, 14, 19, 0.95)),
+                              url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+      }
+      .neon-glow-stat {
+        text-shadow: 0 0 10px rgba(0, 238, 252, 0.5);
+      }
+      .success-border { border-left: 4px solid #00eefc; }
+      .error-border { border-left: 4px solid #ff6e84; }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <h1>🎵 Results</h1>
-        <p class="subtitle">Scanned {{ total_tracks }} tracks from your playlist</p>
+<body class="bg-background text-on-surface font-body min-h-screen bg-stage-texture">
 
-        <div class="results">
-            {% for result in results %}
-            <div class="result-card {{ 'success' if result.success else 'error' }}">
+<header class="fixed top-0 w-full z-50 bg-[#0e0e13]/70 backdrop-blur-3xl px-6 py-4 flex justify-between items-center border-b border-white/5">
+    <div class="font-headline font-bold tracking-tighter text-2xl italic text-[#ff83d5]">Neon Stage</div>
+    <a href="/" class="text-[10px] font-black tracking-widest uppercase border border-white/20 px-4 py-2 rounded-full hover:bg-white/10 transition-all">
+        ← Return to Console
+    </a>
+</header>
+
+<main class="relative z-10 pt-32 pb-24 px-6 max-w-4xl mx-auto">
+    <div class="mb-12 text-center">
+        <span class="inline-block bg-secondary/10 text-secondary px-4 py-1 rounded-full text-[10px] font-black tracking-[0.2em] uppercase mb-4 border border-secondary/20">
+            Performance Complete
+        </span>
+        <h1 class="font-headline text-5xl font-extrabold tracking-tighter mb-2">Sync <span class="text-secondary">Report</span></h1>
+        <p class="text-on-surface-variant font-medium">Processed {{ total_tracks }} tracks from your source playlist</p>
+    </div>
+
+    <div class="space-y-6">
+        {% for result in results %}
+        <div class="bg-surface-container/60 backdrop-blur-xl rounded-xl p-6 border border-white/5 shadow-2xl transition-transform hover:scale-[1.01] {{ 'success-border' if result.success else 'error-border' }}">
+
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="font-headline text-2xl font-bold flex items-center gap-3">
+                        {% if result.success %}
+                            <span class="material-symbols-outlined text-secondary">check_circle</span>
+                            {{ result.group }}
+                        {% else %}
+                            <span class="material-symbols-outlined text-error">error</span>
+                            {{ result.group }}
+                        {% endif %}
+                    </h2>
+                    {% if not result.success %}
+                        <p class="text-error/80 text-sm mt-1">{{ result.error }}</p>
+                    {% endif %}
+                </div>
+
                 {% if result.success %}
-                    <h2>✅ {{ result.group }}</h2>
-                    <div class="stats">
-                        <div class="stat">
-                            <span class="stat-label">In your playlist</span>
-                            <span class="stat-value">{{ result.in_playlist }} tracks</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-label">Missing songs found</span>
-                            <span class="stat-value">{{ result.missing }} tracks</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-label">Added to new_{{ result.group | lower }}</span>
-                            <span class="stat-value">{{ result.resolved }} tracks</span>
-                        </div>
+                <div class="flex gap-6 overflow-x-auto pb-2 md:pb-0">
+                    <div class="text-center">
+                        <p class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Existing</p>
+                        <p class="text-xl font-headline font-black text-on-surface">{{ result.in_playlist }}</p>
                     </div>
-                {% else %}
-                    <h2>❌ {{ result.group }}</h2>
-                    <p class="error-msg">{{ result.error }}</p>
+                    <div class="text-center">
+                        <p class="text-[10px] uppercase tracking-widest text-secondary font-bold">Missing</p>
+                        <p class="text-xl font-headline font-black text-secondary neon-glow-stat">{{ result.missing }}</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-[10px] uppercase tracking-widest text-primary font-bold">Synced</p>
+                        <p class="text-xl font-headline font-black text-primary">{{ result.resolved }}</p>
+                    </div>
+                </div>
                 {% endif %}
             </div>
-            {% endfor %}
-        </div>
 
-        <a href="/" class="back-btn">← Run Again</a>
+            {% if result.success %}
+            <div class="mt-4 pt-4 border-t border-white/5">
+                <div class="flex items-center gap-2 text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter">
+                    <span class="material-symbols-outlined text-sm">auto_awesome</span>
+                    Target Playlist: <span class="text-tertiary">new_{{ result.group | lower | replace(' ', '_') }}</span>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
     </div>
+
+    <div class="mt-16 flex flex-col items-center gap-6">
+        <a href="/" class="group relative px-12 py-4 bg-white text-black rounded-full font-black tracking-widest uppercase transition-all hover:scale-105 active:scale-95">
+            Start New Session
+        </a>
+        <p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-[0.3em] opacity-50">Stage Manager v2.0</p>
+    </div>
+</main>
+
+<div class="fixed bottom-0 left-0 w-full h-64 bg-gradient-to-t from-primary/5 to-transparent pointer-events-none -z-10"></div>
+
 </body>
 </html>

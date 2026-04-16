@@ -1,6 +1,6 @@
 # config.py � auto-updated by scheduler
-SOURCE_PLAYLIST_URL = "https://music.youtube.com/playlist?list=PLURfIY-yAalhne8d-OBemOtVMHo9BL2gO"
+SOURCE_PLAYLIST_URL = ""
 
-TARGET_GROUPS = ['BLACKPINK', 'BABYMONSTER', 'IVE']
+TARGET_GROUPS = []
 
 

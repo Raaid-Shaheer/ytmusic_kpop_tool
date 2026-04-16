@@ -29,7 +29,7 @@ class PlaylistManager:
             print(f"  '{artist_name}' playlist is already up to date")
 
     def rebuild_new_playlist(self, artist_name: str, tracks: List[Track]):
-        title = f"new_{artist_name.lower()}"
+        title = f"New_{artist_name.capitalize()}"
 
         # Delete existing playlist if it exists
         all_playlists = self._client.get_library_playlists(limit=100)

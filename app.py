@@ -11,7 +11,7 @@ from auth.header_parser import parse_headers
 import os
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "change-this-in-production")
+app.secret_key = os.environ.get("SECRET_KEY")
 
 # Initialise components once at startup
 
