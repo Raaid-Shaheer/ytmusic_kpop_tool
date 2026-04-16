@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Neon Stage | YtMusic Playlist Manager</title>
+    <title> YtMusic Playlist Manager</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
@@ -66,15 +66,10 @@
                         "surface-variant": "#25252c"
                     },
                     "borderRadius": {
-                        "DEFAULT": "1rem",
-                        "lg": "2rem",
-                        "xl": "3rem",
-                        "full": "9999px"
+                        "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"
                     },
                     "fontFamily": {
-                        "headline": ["Plus Jakarta Sans"],
-                        "body": ["Manrope"],
-                        "label": ["Plus Jakarta Sans"]
+                        "headline": ["Plus Jakarta Sans"], "body": ["Manrope"], "label": ["Plus Jakarta Sans"]
                     }
                 },
             },
@@ -82,10 +77,23 @@
     </script>
     <style>
         .material-symbols-outlined { font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24 }
-        .bg-aura-glow { background: radial-gradient(circle at 10% 20%, rgba(255, 131, 213, 0.07) 0%, transparent 50%), radial-gradient(circle at 90% 80%, rgba(0, 238, 252, 0.05) 0%, transparent 50%), radial-gradient(circle at 50% 50%, rgba(165, 51, 255, 0.03) 0%, transparent 70%) }
+        .bg-aura-glow {
+            background: radial-gradient(circle at 10% 20%, rgba(255, 131, 213, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 90% 80%, rgba(0, 238, 252, 0.06) 0%, transparent 50%);
+        }
+        /* Fixed Background Image Implementation */
+        .bg-stage-texture {
+            background-image: linear-gradient(to bottom, rgba(14, 14, 19, 0.8), rgba(14, 14, 19, 0.9)),
+                              url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
     </style>
 </head>
-<body class="bg-background text-on-surface font-body min-h-screen relative overflow-x-hidden">
+<body class="bg-background text-on-surface font-body min-h-screen relative overflow-x-hidden bg-stage-texture">
+
+    <div class="fixed inset-0 bg-aura-glow pointer-events-none -z-10"></div>
 
     <form id="delete-form" action="/delete-group" method="POST" style="display:none;">
         <input type="hidden" id="delete-group-input" name="group" value="">
@@ -94,41 +102,52 @@
         <input id="hidden-group-name" name="group" type="hidden">
     </form>
 
-    <div class="fixed inset-0 bg-aura-glow pointer-events-none -z-10"></div>
-
-    <header class="bg-neutral-950/70 backdrop-blur-xl sticky top-0 z-50 flex justify-between items-center w-full px-6 py-4">
+    <header class="bg-neutral-950/70 backdrop-blur-xl sticky top-0 z-50 flex justify-between items-center w-full px-6 py-4 border-b border-white/5">
         <div class="flex items-center gap-3">
             <span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">queue_music</span>
-            <h1 class="text-2xl font-black italic text-[#ff83d5]">Neon Stage</h1>
+            <h1 class="text-2xl font-black italic text-[#ff83d5] drop-shadow-[0_0_8px_rgba(255,131,213,0.5)]">Neon Stage</h1>
         </div>
+        <nav class="hidden md:flex gap-8">
+            <a class="text-[#ff83d5] border-b-2 border-[#ff83d5] py-1 font-semibold" href="#">Playlist Manager</a>
+            <a class="text-neutral-400 py-1 font-semibold hover:text-[#00eefc] transition-colors" href="#">Artist Radar</a>
+        </nav>
     </header>
 
-    <main class="max-w-4xl mx-auto px-6 py-12">
+    <main class="max-w-4xl mx-auto px-6 py-12 lg:py-20">
         <div class="mb-12 text-center">
-            <h2 class="font-headline text-5xl md:text-6xl font-extrabold tracking-tighter text-on-surface mb-4">
+            <h2 class="font-headline text-5xl md:text-7xl font-extrabold tracking-tighter text-on-surface mb-4">
                 YtMusic <span class="text-primary italic">Manager</span>
             </h2>
+            <p class="text-on-surface-variant font-medium tracking-widest uppercase text-xs opacity-70">
+                Curating the Electric Edge of Your Library
+            </p>
         </div>
 
-        <div class="bg-surface-container/60 backdrop-blur-3xl rounded-xl p-8 shadow-2xl border border-white/5">
+        <div class="bg-surface-container/60 backdrop-blur-3xl rounded-xl p-8 md:p-12 shadow-2xl border border-white/5 relative">
             <form id="run-form" action="/run" method="POST" class="space-y-12">
+
                 <div class="space-y-4">
                     <label class="block font-headline text-sm font-bold uppercase tracking-widest text-secondary ml-1">Playlist Source URL</label>
-                    <input class="w-full bg-surface-container-lowest border-none rounded-lg px-6 py-5 text-on-surface placeholder:text-outline-variant focus:ring-2 focus:ring-tertiary outline-none"
-                           name="playlist_url" placeholder="https://music.youtube.com/playlist?list=..." type="text" required>
+                    <div class="relative group">
+                        <input class="w-full bg-surface-container-lowest border-none rounded-lg px-6 py-5 text-on-surface placeholder:text-outline-variant focus:ring-2 focus:ring-tertiary transition-all outline-none"
+                               name="playlist_url" placeholder="https://music.youtube.com/playlist?list=..." type="text" required>
+                    </div>
                 </div>
 
                 <div class="space-y-6">
-                    <label class="block font-headline text-sm font-bold uppercase tracking-widest text-primary ml-1">Target Artists</label>
+                    <div class="flex justify-between items-end">
+                        <label class="block font-headline text-sm font-bold uppercase tracking-widest text-primary ml-1">Target Artists</label>
+                        <span class="text-[10px] text-on-surface-variant font-bold uppercase">Multi-select enabled</span>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                         {% for group in groups %}
                         <div class="relative group flex items-center justify-between bg-surface-container-low hover:bg-surface-container-high border border-white/5 p-3 rounded-full transition-all">
-                            <div class="flex items-center">
+                            <div class="flex items-center overflow-hidden">
                                 <input checked class="w-5 h-5 rounded-full border-2 border-secondary/30 bg-surface-container-highest text-secondary focus:ring-secondary cursor-pointer"
                                        name="groups" type="checkbox" value="{{ group }}">
                                 <span class="ml-3 font-semibold text-sm text-on-surface truncate">{{ group }}</span>
                             </div>
-                            <button type="button" onclick="deleteGroup('{{ group }}')" class="w-7 h-7 flex items-center justify-center rounded-full bg-error-container/20 text-error hover:bg-error-container transition-colors">
+                            <button type="button" onclick="deleteGroup('{{ group }}')" class="w-7 h-7 flex-shrink-0 flex items-center justify-center rounded-full bg-error-container/20 text-error hover:bg-error-container transition-colors">
                                 <span class="material-symbols-outlined text-sm">close</span>
                             </button>
                         </div>
@@ -137,7 +156,7 @@
                 </div>
 
                 <div class="pt-10 flex flex-col items-center gap-4">
-                    <button type="submit" class="group relative px-16 py-5 bg-primary rounded-full font-black tracking-widest text-on-primary-fixed uppercase shadow-lg hover:shadow-primary/40 active:scale-95 transition-all">
+                    <button type="submit" class="group relative px-16 py-5 bg-primary rounded-full font-black tracking-[0.2em] text-on-primary-fixed uppercase shadow-[0_0_20px_rgba(255,131,213,0.4)] hover:shadow-[0_0_40px_rgba(255,131,213,0.6)] active:scale-95 transition-all duration-300">
                         <span class="relative z-10">Initiate Sync</span>
                     </button>
                     <p class="text-on-surface-variant text-[10px] font-bold uppercase tracking-widest animate-pulse">Ready for performance</p>
@@ -147,9 +166,9 @@
             <div class="mt-10 pt-6 border-t border-white/5">
                 <div class="flex flex-col md:flex-row gap-3">
                     <input class="flex-grow bg-surface-container-low border-none rounded-full px-6 py-3 text-sm focus:ring-1 focus:ring-secondary transition-all"
-                           id="new-artist-name" placeholder="Enter artist or group name..." type="text">
+                           id="new-artist-name" placeholder="Enter artist name (e.g. NewJeans)" type="text">
                     <button onclick="addArtistAction()" class="bg-secondary-container/20 text-secondary border border-secondary/20 font-bold px-8 py-3 rounded-full hover:bg-secondary hover:text-on-secondary transition-all flex items-center justify-center gap-2">
-                        <span class="material-symbols-outlined text-xl">add</span> ADD
+                        <span class="material-symbols-outlined text-xl">add</span> ADD ARTIST
                     </button>
                 </div>
             </div>
@@ -157,16 +176,18 @@
     </main>
 
     <div class="fixed inset-0 bg-background/95 backdrop-blur-md z-[100] flex flex-col items-center justify-center hidden" id="loading-overlay">
-        <div class="relative w-32 h-32 flex items-center justify-center mb-8">
+        <div class="relative w-48 h-48 flex items-center justify-center">
             <div class="absolute inset-0 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+            <div class="absolute inset-4 border-4 border-secondary/20 border-b-secondary rounded-full animate-[spin_1.5s_linear_infinite_reverse]"></div>
             <span class="material-symbols-outlined text-4xl text-primary animate-pulse">graphic_eq</span>
         </div>
-        <h3 class="font-headline text-2xl font-black text-on-surface tracking-widest uppercase">Processing Stage</h3>
-        <div class="mt-6 space-y-2 text-center text-sm font-medium text-on-surface-variant">
-            <p>⏳ Scanning playlist tracks</p>
-            <p>⏳ Fetching discographies from MusicBrainz</p>
-            <p>⏳ Finding missing songs</p>
-            <p>⏳ Updating playlists</p>
+        <h3 class="mt-8 font-headline text-3xl font-black text-on-surface tracking-widest uppercase text-center">Processing Stage</h3>
+
+        <div class="mt-8 space-y-3 text-center">
+            <p class="text-on-surface/80 flex items-center justify-center gap-2"><span class="animate-bounce">⏳</span> Scanning playlist tracks</p>
+            <p class="text-on-surface/60 flex items-center justify-center gap-2">⏳ Fetching discographies from MusicBrainz</p>
+            <p class="text-on-surface/40 flex items-center justify-center gap-2">⏳ Finding missing songs</p>
+            <p class="text-on-surface/20 flex items-center justify-center gap-2">⏳ Updating playlists</p>
         </div>
     </div>
 
@@ -182,10 +203,10 @@
 
     <script>
         function addArtistAction() {
-            const artistInput = document.getElementById('new-artist-name');
-            const artistName = artistInput.value.trim();
-            if (artistName) {
-                document.getElementById('hidden-group-name').value = artistName;
+            const input = document.getElementById('new-artist-name');
+            const name = input.value.trim();
+            if (name) {
+                document.getElementById('hidden-group-name').value = name;
                 document.getElementById('add-artist-form').submit();
             }
         }
@@ -203,13 +224,7 @@
             document.getElementById("modal-overlay").classList.add('hidden');
         }
 
-        document.getElementById('run-form').addEventListener('submit', function(e) {
-            const checked = document.querySelectorAll('input[name="groups"]:checked');
-            if (checked.length === 0) {
-                alert("Please select at least one artist");
-                e.preventDefault();
-                return;
-            }
+        document.getElementById('run-form').addEventListener('submit', function() {
             document.getElementById('loading-overlay').classList.remove('hidden');
         });
     </script>
