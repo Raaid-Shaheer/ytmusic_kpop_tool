@@ -66,8 +66,8 @@ def process_playlist(playlist_url, selected_groups, scanner, matcher, manager):
             })
             yield format_sse({"step": f"Error with {group}: {str(e)}", "error": True})
 
-    session["results"] = results
-    session["total_tracks"] = total_tracks
+    last_run["results"] = results
+    last_run["total_tracks"] = total_tracks
 
     yield format_sse({"done": True, "results": results, "total_tracks": total_tracks})
 
@@ -166,8 +166,8 @@ def stream():
 
 @app.route("/results")
 def results():
-    results = session.get("results")
-    total_tracks = session.get("total_tracks")
+    results = last_run.get("results")
+    total_tracks = last_run.get("total_tracks")
 
     if not results or not total_tracks:
         return redirect(url_for("home"))
