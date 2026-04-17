@@ -164,7 +164,30 @@
                     </li>
                 </ul>
             </div>
-
+            <div class="bg-surface-container-low backdrop-blur-xl p-8 rounded-lg border border-outline-variant/10 shadow-2xl relative overflow-hidden">
+                <div class="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 blur-[60px] rounded-full"></div>
+                <h3 class="font-headline text-xs font-black tracking-widest uppercase text-on-surface mb-8 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-primary rounded-full"></span> Is this safe?
+                </h3>
+                <ul class="space-y-6 relative">
+                    <li class="flex gap-4">
+                        <span class="material-symbols-outlined text-primary text-xl">lock</span>
+                        <p class="text-sm text-on-surface-variant leading-relaxed">Your headers are stored <strong>only in your browser session</strong> — never written to a database or disk.</p>
+                    </li>
+                    <li class="flex gap-4">
+                        <span class="material-symbols-outlined text-primary text-xl">person_off</span>
+                        <p class="text-sm text-on-surface-variant leading-relaxed">Nobody — including the developer — can see your credentials. The server reads them per-request and discards them immediately.</p>
+                    </li>
+                    <li class="flex gap-4">
+                        <span class="material-symbols-outlined text-primary text-xl">logout</span>
+                        <p class="text-sm text-on-surface-variant leading-relaxed">Closing your browser clears the session completely.</p>
+                    </li>
+                    <li class="flex gap-4">
+                        <span class="material-symbols-outlined text-primary text-xl">code</span>
+                        <p class="text-sm text-on-surface-variant leading-relaxed">Don't take our word for it — the full source code is open on GitHub.</p>
+                    </li>
+                </ul>
+            </div>
 
         </aside>
     </div>
