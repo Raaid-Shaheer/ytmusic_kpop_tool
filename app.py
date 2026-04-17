@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request,redirect, url_for, session
+from flask import Flask, render_template, request,redirect, url_for, session, Response,stream_with_context
 from auth.auth_manager import get_ytmusic
 from config import SOURCE_PLAYLIST_URL, TARGET_GROUPS
 from core.playlist_scanner import PlaylistScanner
@@ -9,6 +9,7 @@ from clients.musicbrainz_client import MusicBrainzClient
 from auth.exceptions import NotAuthenticatedError
 from auth.header_parser import parse_headers
 import os
+import json
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY")
@@ -21,19 +22,28 @@ fetcher = DiscographyFetcher(mb_client=mb_client)
 # Track last run in memory
 last_run = {"time": None, "results": None}
 
+def format_sse(message: dict) -> str:
+    return "data: " + json.dumps(message) + "\n\n"
 
-def process_playlist(playlist_url: str, selected_groups: list,scanner,matcher,manager) -> dict:
+def process_playlist(playlist_url, selected_groups, scanner, matcher, manager):
+    yield format_sse({"step": "Scanning playlist..."})
     playlist_tracks = scanner.scan(playlist_url)
     total_tracks = len(playlist_tracks)
+    yield format_sse({"step": f"Found {total_tracks} tracks"})
+
     results = []
 
     for group in selected_groups:
         try:
+            yield format_sse({"step": f"Fetching discography for {group}..."})
             discography = fetcher.get_discography(group)
+
+            yield format_sse({"step": f"Finding missing tracks for {group}..."})
             group_in_playlist = matcher.filter_by_artist(playlist_tracks, group)
             missing = matcher.find_missing(group_in_playlist, discography)
             resolved = matcher.resolve_video_ids(missing)
 
+            yield format_sse({"step": f"Updating playlists for {group}..."})
             manager.update_group_playlist(group, group_in_playlist)
             manager.rebuild_new_playlist(group, resolved)
 
@@ -44,21 +54,24 @@ def process_playlist(playlist_url: str, selected_groups: list,scanner,matcher,ma
                 "missing": len(missing),
                 "resolved": len(resolved)
             })
+            yield format_sse({"step": f"Done with {group}!", "group_done": True})
 
-        except ValueError as e:
+
+
+        except Exception as e:
             results.append({
                 "group": group,
                 "success": False,
                 "error": str(e)
             })
-        except Exception as e:
-            results.append({
-                "group": group,
-                "success": False,
-                "error": f"Unexpected error: {str(e)}"
-            })
+            yield format_sse({"step": f"Error with {group}: {str(e)}", "error": True})
 
-    return {"total_tracks": total_tracks, "results": results}
+    session["results"] = results
+    session["total_tracks"] = total_tracks
+
+    yield format_sse({"done": True, "results": results, "total_tracks": total_tracks})
+
+
 
 def _save_config():
     config_content = f'''# config.py — auto-updated
@@ -67,6 +80,8 @@ TARGET_GROUPS = {TARGET_GROUPS}
 '''
     with open("config.py", "w") as f:
         f.write(config_content)
+
+
 
 @app.route("/")
 def home():
@@ -77,21 +92,15 @@ def home():
 
 @app.route("/run", methods=["POST"])
 def run():
-    try:
-        ytmusic = get_ytmusic()
-        scanner = PlaylistScanner(ytmusic)
-        matcher = TrackMatcher(ytmusic)
-        manager = PlaylistManager(ytmusic)
-        playlist_url = request.form.get("playlist_url", "").strip()
-        selected_groups = request.form.getlist("groups")
-        data = process_playlist(playlist_url, selected_groups,scanner, matcher, manager)
-        return render_template(
-            "results.html",
-            results=data["results"],
-            total_tracks=data["total_tracks"]
-        )
-    except NotAuthenticatedError:
-        return redirect(url_for("setup"))
+    playlist_url = request.form.get("playlist_url", "").strip()
+    selected_groups = request.form.getlist("groups")
+
+    # save to session
+    session["playlist_url"] = playlist_url
+    session["groups"] = selected_groups
+
+    # redirect to loading page
+    return redirect(url_for("loading"))
 
 
 @app.route("/setup", methods=["GET", "POST"])
@@ -122,6 +131,48 @@ def add_group():
     TARGET_GROUPS.append(group)
     _save_config()
     return redirect(url_for("home"))
+
+@app.route("/loading")
+def loading():
+    return render_template("loading.html")
+
+
+@app.route("/stream")
+def stream():
+    def generate():
+        playlist_url = session.get("playlist_url")
+        selected_groups = session.get("groups")
+
+        if not playlist_url or not selected_groups:
+            yield format_sse({"error": "no session", "redirect": "/"})
+            return
+
+        try:
+            ytmusic = get_ytmusic()
+            scanner = PlaylistScanner(ytmusic)
+            matcher = TrackMatcher(ytmusic)
+            manager = PlaylistManager(ytmusic)
+        except NotAuthenticatedError:
+            yield format_sse({"error": "not authenticated", "redirect": "/setup"})
+            return
+
+        for event in process_playlist(playlist_url, selected_groups, scanner, matcher, manager):
+            yield event
+
+    return Response(
+        stream_with_context(generate()),
+        mimetype="text/event-stream"
+    )
+
+@app.route("/results")
+def results():
+    results = session.get("results")
+    total_tracks = session.get("total_tracks")
+
+    if not results or not total_tracks:
+        return redirect(url_for("home"))
+
+    return render_template("results.html", results=results, total_tracks=total_tracks)
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -171,21 +171,6 @@
         </div>
     </main>
 
-    <div class="fixed inset-0 bg-background/95 backdrop-blur-md z-[100] flex flex-col items-center justify-center hidden" id="loading-overlay">
-        <div class="relative w-48 h-48 flex items-center justify-center">
-            <div class="absolute inset-0 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-            <div class="absolute inset-4 border-4 border-secondary/20 border-b-secondary rounded-full animate-[spin_1.5s_linear_infinite_reverse]"></div>
-            <span class="material-symbols-outlined text-4xl text-primary animate-pulse">graphic_eq</span>
-        </div>
-        <h3 class="mt-8 font-headline text-3xl font-black text-on-surface tracking-widest uppercase text-center">Processing Stage</h3>
-
-        <div class="mt-8 space-y-3 text-center">
-            <p class="text-on-surface/80 flex items-center justify-center gap-2"><span class="animate-bounce">⏳</span> Scanning playlist tracks</p>
-            <p class="text-on-surface/60 flex items-center justify-center gap-2">⏳ Fetching discographies from MusicBrainz</p>
-            <p class="text-on-surface/40 flex items-center justify-center gap-2">⏳ Finding missing songs</p>
-            <p class="text-on-surface/20 flex items-center justify-center gap-2">⏳ Updating playlists</p>
-        </div>
-    </div>
 
     <div id="modal-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[110] flex items-center justify-center hidden">
         <div class="bg-surface-container p-8 rounded-xl border border-white/10 max-w-xs w-full text-center">
@@ -220,9 +205,7 @@
             document.getElementById("modal-overlay").classList.add('hidden');
         }
 
-        document.getElementById('run-form').addEventListener('submit', function() {
-            document.getElementById('loading-overlay').classList.remove('hidden');
-        });
+
     </script>
 </body>
 </html>
