@@ -98,9 +98,6 @@
     <form id="delete-form" action="/delete-group" method="POST" style="display:none;">
         <input type="hidden" id="delete-group-input" name="group" value="">
     </form>
-    <form id="add-artist-form" action="/add-group" method="POST" style="display:none;">
-        <input id="hidden-group-name" name="group" type="hidden">
-    </form>
 
     <header class="bg-neutral-950/70 backdrop-blur-xl sticky top-0 z-50 flex justify-between items-center w-full px-6 py-4 border-b border-white/5">
     <div class="flex items-center gap-3">
@@ -129,7 +126,7 @@
                     <div class="flex flex-col md:flex-row gap-3">
                         <input class="flex-grow bg-surface-container-low border-none rounded-full px-6 py-3 text-sm focus:ring-1 focus:ring-secondary transition-all"
                                id="new-artist-name" placeholder="Enter artist name (e.g. NewJeans)" type="text">
-                        <button onclick="addArtistAction()" class="bg-secondary-container/20 text-secondary border border-secondary/20 font-bold px-8 py-3 rounded-full hover:bg-secondary hover:text-on-secondary transition-all flex items-center justify-center gap-2">
+                        <button type="button" onclick="addArtistAction()" class="bg-secondary-container/20 text-secondary border border-secondary/20 font-bold px-8 py-3 rounded-full hover:bg-secondary hover:text-on-secondary transition-all flex items-center justify-center gap-2">
                             <span class="material-symbols-outlined text-xl">add</span> ADD ARTIST
                         </button>
                     </div>
@@ -192,12 +189,34 @@
         function addArtistAction() {
             const input = document.getElementById('new-artist-name');
             const name = input.value.trim();
-            if (name) {
-                document.getElementById('hidden-group-name').value = name;
-                document.getElementById('add-artist-form').submit();
-            }
-        }
+            if (!name) return;
 
+            fetch('/add-group', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'group=' + encodeURIComponent(name)
+            })
+            .then(response => {
+                if (response.ok) {
+                    input.value = '';
+
+                    const grid = document.querySelector('.grid');
+                    const chip = document.createElement('div');
+                    chip.className = 'relative group flex items-center justify-between bg-surface-container-low hover:bg-surface-container-high border border-white/5 p-3 rounded-full transition-all';
+                    chip.innerHTML = `
+                        <div class="flex items-center overflow-hidden">
+                            <input checked class="w-5 h-5 rounded-full border-2 border-secondary/30 bg-surface-container-highest text-secondary focus:ring-secondary cursor-pointer"
+                                   name="groups" type="checkbox" value="${name}">
+                            <span class="ml-3 font-semibold text-sm text-on-surface truncate">${name}</span>
+                        </div>
+                        <button type="button" onclick="deleteGroup('${name}')" class="w-7 h-7 flex-shrink-0 flex items-center justify-center rounded-full bg-error-container/20 text-error hover:bg-error-container transition-colors">
+                            <span class="material-symbols-outlined text-sm">close</span>
+                        </button>
+                    `;
+                    grid.appendChild(chip);
+                }
+            });
+        }
         function deleteGroup(name) {
             document.getElementById("modal-message").textContent = `Remove ${name} from your list?`;
             document.getElementById("modal-overlay").classList.remove('hidden');
