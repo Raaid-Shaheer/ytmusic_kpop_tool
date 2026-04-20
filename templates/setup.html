@@ -136,6 +136,32 @@
                     Connect Account
                     <span class="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_forward</span>
                 </button>
+                <div class="mt-4">
+    <button type="button" onclick="toggleSafety()" class="flex items-center gap-2 text-xs text-on-surface-variant hover:text-primary transition-colors">
+        <span class="material-symbols-outlined text-sm">lock</span>
+        Is this safe?
+        <span id="safety-arrow" class="material-symbols-outlined text-sm transition-transform">expand_more</span>
+    </button>
+
+    <div id="safety-details" class="hidden mt-4 space-y-4 border-t border-white/5 pt-4">
+        <div class="flex gap-3">
+            <span class="material-symbols-outlined text-primary text-sm">lock</span>
+            <p class="text-xs text-on-surface-variant leading-relaxed">Your headers are stored <strong>only in your browser session</strong> — never written to a database or disk.</p>
+        </div>
+        <div class="flex gap-3">
+            <span class="material-symbols-outlined text-primary text-sm">person_off</span>
+            <p class="text-xs text-on-surface-variant leading-relaxed">Nobody — including the developer — can see your credentials. The server reads them per-request and discards them immediately.</p>
+        </div>
+        <div class="flex gap-3">
+            <span class="material-symbols-outlined text-primary text-sm">logout</span>
+            <p class="text-xs text-on-surface-variant leading-relaxed">Closing your browser clears the session completely.</p>
+        </div>
+        <div class="flex gap-3">
+            <span class="material-symbols-outlined text-primary text-sm">code</span>
+            <p class="text-xs text-on-surface-variant leading-relaxed">Don't take our word for it — the full source code is open on GitHub.</p>
+        </div>
+    </div>
+</div>
             </form>
         </div>
 
@@ -164,31 +190,6 @@
                     </li>
                 </ul>
             </div>
-            <div class="bg-surface-container-low backdrop-blur-xl p-8 rounded-lg border border-outline-variant/10 shadow-2xl relative overflow-hidden">
-                <div class="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 blur-[60px] rounded-full"></div>
-                <h3 class="font-headline text-xs font-black tracking-widest uppercase text-on-surface mb-8 flex items-center gap-2">
-                    <span class="w-2 h-2 bg-primary rounded-full"></span> Is this safe?
-                </h3>
-                <ul class="space-y-6 relative">
-                    <li class="flex gap-4">
-                        <span class="material-symbols-outlined text-primary text-xl">lock</span>
-                        <p class="text-sm text-on-surface-variant leading-relaxed">Your headers are stored <strong>only in your browser session</strong> — never written to a database or disk.</p>
-                    </li>
-                    <li class="flex gap-4">
-                        <span class="material-symbols-outlined text-primary text-xl">person_off</span>
-                        <p class="text-sm text-on-surface-variant leading-relaxed">Nobody — including the developer — can see your credentials. The server reads them per-request and discards them immediately.</p>
-                    </li>
-                    <li class="flex gap-4">
-                        <span class="material-symbols-outlined text-primary text-xl">logout</span>
-                        <p class="text-sm text-on-surface-variant leading-relaxed">Closing your browser clears the session completely.</p>
-                    </li>
-                    <li class="flex gap-4">
-                        <span class="material-symbols-outlined text-primary text-xl">code</span>
-                        <p class="text-sm text-on-surface-variant leading-relaxed">Don't take our word for it — the full source code is open on GitHub.</p>
-                    </li>
-                </ul>
-            </div>
-
         </aside>
     </div>
 </main>
