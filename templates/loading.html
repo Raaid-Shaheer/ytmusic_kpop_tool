@@ -84,6 +84,12 @@
 
     const source = new EventSource("/stream");
 
+    source.onopen =function(){
+    };
+    source.onerror = function() {
+    // prevent reconnect on error
+    source.close();
+};
     source.onmessage = function(event) {
         const data = JSON.parse(event.data);
 

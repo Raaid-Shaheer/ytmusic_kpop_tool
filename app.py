@@ -12,7 +12,7 @@ import os
 import json
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY")
+app.secret_key = os.environ.get("SECRET_KEY","noondapilk")
 
 # Initialise components once at startup
 
@@ -20,7 +20,7 @@ mb_client = MusicBrainzClient()
 fetcher = DiscographyFetcher(mb_client=mb_client)
 
 # Track last run in memory
-last_run = {"time": None, "results": None}
+last_run = {"time": None, "results": None, "running": False}
 
 def format_sse(message: dict) -> str:
     return "data: " + json.dumps(message) + "\n\n"
@@ -29,7 +29,7 @@ def process_playlist(playlist_url, selected_groups, scanner, matcher, manager):
     yield format_sse({"step": "Scanning playlist..."})
     playlist_tracks = scanner.scan(playlist_url)
     total_tracks = len(playlist_tracks)
-    yield format_sse({"step": f"Found {total_tracks} tracks"})
+    yield format_sse({"step": f"Found {total_tracks} tracks in your playlist"})
 
     results = []
 
@@ -140,30 +140,42 @@ def loading():
 @app.route("/stream")
 def stream():
     def generate():
-        playlist_url = session.get("playlist_url")
-        selected_groups = session.get("groups")
-
-        if not playlist_url or not selected_groups:
-            yield format_sse({"error": "no session", "redirect": "/"})
+        if last_run["running"]:
             return
-
+        last_run["running"] = True
         try:
-            ytmusic = get_ytmusic()
-            scanner = PlaylistScanner(ytmusic)
-            matcher = TrackMatcher(ytmusic)
-            manager = PlaylistManager(ytmusic)
-        except NotAuthenticatedError:
-            yield format_sse({"error": "not authenticated", "redirect": "/setup"})
-            return
+            yield "retry: 2147483647\n\n"
+            playlist_url = session.get("playlist_url")
+            selected_groups = session.get("groups")
 
-        for event in process_playlist(playlist_url, selected_groups, scanner, matcher, manager):
-            yield event
+            if not playlist_url or not selected_groups:
+                yield format_sse({"error": "no session", "redirect": "/"})
+                return
+
+            try:
+                ytmusic = get_ytmusic()
+                scanner = PlaylistScanner(ytmusic)
+                matcher = TrackMatcher(ytmusic)
+                manager = PlaylistManager(ytmusic)
+            except NotAuthenticatedError:
+                yield format_sse({"error": "not authenticated", "redirect": "/setup"})
+                return
+
+            for event in process_playlist(playlist_url, selected_groups, scanner, matcher, manager):
+                yield event
+
+        finally:
+            last_run["running"] = False
 
     return Response(
         stream_with_context(generate()),
-        mimetype="text/event-stream"
+        mimetype="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no",
+            "Retry": "0"
+        }
     )
-
 @app.route("/results")
 def results():
     results = last_run.get("results")
