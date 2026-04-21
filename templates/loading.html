@@ -87,15 +87,10 @@
     source.onmessage = function(event) {
         const data = JSON.parse(event.data);
 
-        if (data.error) {
-            errorBox.style.display = "block";
-            errorMsg.textContent = data.error;
-            source.close();
-            return;
-        }
-
+        // fatal error - show error box and stop
         if (data.redirect) {
-            window.location.href = data.redirect;
+            errorBox.style.display = "block";
+            errorMsg.textContent = data.step || "Something went wrong";
             source.close();
             return;
         }
@@ -106,6 +101,7 @@
             return;
         }
 
+        // append step — red if error, normal if not
         const p = document.createElement("p");
         p.textContent = "→ " + data.step;
         p.className = data.error

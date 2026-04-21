@@ -2,3 +2,8 @@ browser.json
 cache/
 venv/
 __pycache__/
+.gitignore
+config.py
+kpop_playlist_manager_docs.docx
+procfile
+ytmusic_playlist_manager_docs_v2.docx
