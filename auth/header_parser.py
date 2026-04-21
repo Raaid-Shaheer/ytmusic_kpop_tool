@@ -15,6 +15,11 @@ def parse_fetch_format(raw: str) -> str:
     headers_json = raw[brace_start:brace_end + 1]
     headers_dict = json.loads(headers_json)
     lines = [f"{k}: {v}" for k, v in headers_dict.items()]
+    if "cookie" not in headers_dict:
+        raise ValueError(
+            "These headers don't contain cookies. Please use 'Copy as fetch (Node.js)' "
+            "or 'Copy request headers normally'"
+        )
     return "\n".join(lines)
 
 def convert_headers(raw: str) -> str:
