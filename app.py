@@ -13,7 +13,7 @@ import json
 import time
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY","noondapilk")
+app.secret_key = os.environ.get("SECRET_KEY")
 
 # Initialise components once at startup
 
