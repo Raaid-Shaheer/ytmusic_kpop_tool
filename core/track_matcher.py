@@ -24,10 +24,4 @@ class TrackMatcher:
 
         return [track for track in discography_tracks if track.title.strip().lower() not in playlist_titles]
 
-    def resolve_video_ids(self, tracks: List[Track]) -> List[Track]:
-        for track in tracks:
-            results = self._client.search(f"{track.title} {track.artist}", filter="songs", limit=1)
-            if results:
-                track.video_id = results[0]["videoId"]
-                time.sleep(0.5)
-        return [track for track in tracks if track.video_id is not None]
+

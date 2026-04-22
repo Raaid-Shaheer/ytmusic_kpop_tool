@@ -10,6 +10,7 @@ from auth.exceptions import NotAuthenticatedError
 from auth.header_parser import parse_headers
 import os
 import json
+import time
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY","noondapilk")
@@ -41,7 +42,16 @@ def process_playlist(playlist_url, selected_groups, scanner, matcher, manager):
             yield format_sse({"step": f"Finding missing tracks for {group}..."})
             group_in_playlist = matcher.filter_by_artist(playlist_tracks, group)
             missing = matcher.find_missing(group_in_playlist, discography)
-            resolved = matcher.resolve_video_ids(missing)
+            yield format_sse({"step": f"Resolving video IDs for {group} (0/{len(missing)})..."})
+            resolved = []
+            for i, track in enumerate(missing):
+                results = matcher._client.search(f"{track.title} {track.artist}", filter="songs", limit=1)
+                if results:
+                    track.video_id = results[0]["videoId"]
+                    resolved.append(track)
+                time.sleep(0.5)
+                if i % 10 == 0:
+                    yield format_sse({"step": f"Resolving video IDs for {group} ({i + 1}/{len(missing)})..."})
 
             yield format_sse({"step": f"Updating playlists for {group}..."})
             manager.update_group_playlist(group, group_in_playlist)
