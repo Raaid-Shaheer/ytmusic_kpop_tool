@@ -45,12 +45,12 @@ def process_playlist(playlist_url, selected_groups, scanner, matcher, manager):
             yield format_sse({"step": f"Resolving video IDs for {group} (0/{len(missing)})..."})
             resolved = []
             for i, track in enumerate(missing):
-                results = matcher._client.search(f"{track.title} {track.artist}", filter="songs", limit=1)
-                if results:
-                    track.video_id = results[0]["videoId"]
+                search_results = matcher._client.search(f"{track.title} {track.artist}", filter="songs", limit=1)
+                if search_results:
+                    track.video_id = search_results[0]["videoId"]
                     resolved.append(track)
                 time.sleep(0.5)
-                if i % 10 == 0:
+                if i % 20 == 0:
                     yield format_sse({"step": f"Resolving video IDs for {group} ({i + 1}/{len(missing)})..."})
 
             yield format_sse({"step": f"Updating playlists for {group}..."})
@@ -190,6 +190,7 @@ def stream():
 def results():
     results = last_run.get("results")
     total_tracks = last_run.get("total_tracks")
+    print(results)
 
     if not results or not total_tracks:
         return redirect(url_for("home"))
