@@ -1,9 +1,17 @@
-browser.json
-cache/
+# Virtual environment
 venv/
+.venv/
+
+# Python cache
 __pycache__/
-.gitignore
-config.py
-kpop_playlist_manager_docs.docx
-procfile
-ytmusic_playlist_manager_docs_v2.docx
+*.pyc
+
+# IDE
+.idea/
+
+# Cache files
+cache/
+browser.json
+
+# Docs
+*.docx
