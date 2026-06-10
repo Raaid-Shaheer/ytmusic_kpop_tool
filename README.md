@@ -57,7 +57,7 @@ A Python/Flask web app that scans your YouTube Music playlist, organises tracks 
 | Discography | MusicBrainzngs + 30-day local cache |
 | Frontend | Tailwind CSS + vanilla JS |
 | Real-time | Server-Sent Events (SSE) |
-| Hosting | Railway (auto-deploy from GitHub) |
+| Hosting | Render (auto-deploy from GitHub) |
 
 ---
 
