@@ -4,7 +4,7 @@
 
 A Python/Flask web app that scans your YouTube Music playlist, organises tracks by artist into dedicated playlists, and cross-references against MusicBrainz to find every song you're missing.
 
-**Live Demo → [disco-syncer.up.railway.app](https://disco-syncer.up.railway.app)**
+**Live Demo → [disco-syncer.up.railway.app](https://ytmusic-kpop-tool.onrender.com)**
 
 ---
 
