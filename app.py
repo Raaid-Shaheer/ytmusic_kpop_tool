@@ -26,11 +26,17 @@ last_run = {"time": None, "results": None, "running": False}
 def format_sse(message: dict) -> str:
     return "data: " + json.dumps(message) + "\n\n"
 
-def process_playlist(playlist_url, selected_groups, scanner, matcher, manager):
+def process_playlist(playlist_url, blacklist_url, selected_groups, scanner, matcher, manager):
     yield format_sse({"step": "Scanning playlist..."})
     playlist_tracks = scanner.scan(playlist_url)
     total_tracks = len(playlist_tracks)
     yield format_sse({"step": f"Found {total_tracks} tracks in your playlist"})
+
+    blacklist_tracks = []
+    if blacklist_url:
+        yield format_sse({"step": "Scanning blacklist playlist..."})
+        blacklist_tracks = scanner.scan(blacklist_url)
+        yield format_sse({"step": f"Loaded {len(blacklist_tracks)} blacklisted tracks"})
 
     results = []
 
@@ -42,6 +48,14 @@ def process_playlist(playlist_url, selected_groups, scanner, matcher, manager):
             yield format_sse({"step": f"Finding missing tracks for {group}..."})
             group_in_playlist = matcher.filter_by_artist(playlist_tracks, group)
             missing = matcher.find_missing(group_in_playlist, discography)
+
+            if blacklist_tracks:
+                before = len(missing)
+                missing = matcher.exclude_blacklisted(missing, blacklist_tracks)
+                skipped = before - len(missing)
+                if skipped:
+                    yield format_sse({"step": f"Skipped {skipped} blacklisted track(s) for {group}"})
+
             yield format_sse({"step": f"Resolving video IDs for {group} (0/{len(missing)})..."})
             resolved = []
             for i, track in enumerate(missing):
@@ -65,8 +79,6 @@ def process_playlist(playlist_url, selected_groups, scanner, matcher, manager):
                 "resolved": len(resolved)
             })
             yield format_sse({"step": f"Done with {group}!", "group_done": True})
-
-
 
         except Exception as e:
             results.append({
@@ -103,13 +115,13 @@ def home():
 @app.route("/run", methods=["POST"])
 def run():
     playlist_url = request.form.get("playlist_url", "").strip()
+    blacklist_url = request.form.get("blacklist_url", "").strip()
     selected_groups = request.form.getlist("groups")
 
-    # save to session
     session["playlist_url"] = playlist_url
+    session["blacklist_url"] = blacklist_url
     session["groups"] = selected_groups
 
-    # redirect to loading page
     return redirect(url_for("loading"))
 
 
@@ -156,6 +168,7 @@ def stream():
         try:
             yield "retry: 2147483647\n\n"
             playlist_url = session.get("playlist_url")
+            blacklist_url = session.get("blacklist_url", "")
             selected_groups = session.get("groups")
 
             if not playlist_url or not selected_groups:
@@ -171,7 +184,7 @@ def stream():
                 yield format_sse({"error": "not authenticated", "redirect": "/setup"})
                 return
 
-            for event in process_playlist(playlist_url, selected_groups, scanner, matcher, manager):
+            for event in process_playlist(playlist_url, blacklist_url, selected_groups, scanner, matcher, manager):
                 yield event
 
         finally:
